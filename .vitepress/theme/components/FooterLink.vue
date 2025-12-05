@@ -16,9 +16,6 @@
       >
         <i :class="`iconfont icon-${item.icon}`"></i>
       </a>
-      <div class="logo" title="返回顶部" @click="smoothScrolling">
-        <img :src="siteMeta.author.cover" alt="author" class="author" />
-      </div>
       <a
         v-for="(item, index) in socialLinkData.second"
         :key="index"
@@ -28,22 +25,6 @@
       >
         <i :class="`iconfont icon-${item.icon}`"></i>
       </a>
-    </div>
-    <div class="footer-sitemap">
-      <div v-for="(item, index) in footer.sitemap" :key="index" class="sitemap-item">
-        <span class="title">{{ item.text }}</span>
-        <div class="links">
-          <a
-            v-for="(link, linkIndex) in item.items"
-            :key="linkIndex"
-            :href="link.link"
-            :target="link.newTab ? '_blank' : null"
-            class="link-text"
-          >
-            {{ link.text }}
-          </a>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -79,7 +60,6 @@ const socialLinkData = computed(() => {
   flex-wrap: wrap;
   flex-direction: row;
   margin: 1rem auto;
-  margin-bottom: 3rem;
   padding: 0 1rem;
   animation: show 0.3s backwards;
   .footer-bar {

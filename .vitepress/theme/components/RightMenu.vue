@@ -140,18 +140,6 @@
           </div>
           <!-- 通用菜单 -->
           <div class="all-menu general">
-            <!-- 版权协议 -->
-            <div class="btn" @click="router.go('/pages/cc')">
-              <i class="iconfont icon-accessible"></i>
-              <span class="name">版权协议</span>
-            </div>
-            <!-- 隐私政策 -->
-            <div class="btn" @click="router.go('/pages/privacy')">
-              <i class="iconfont icon-privacy"></i>
-              <span class="name">隐私政策</span>
-            </div>
-          </div>
-          <div class="all-menu general">
             <!-- 复制地址 -->
             <div class="btn" @click="rightMenuFunc('copy-link')">
               <i class="iconfont icon-copy"></i>
@@ -167,38 +155,6 @@
                   themeType === "auto" ? "深色模式" : themeType === "dark" ? "浅色模式" : "跟随系统"
                 }}
               </span>
-            </div>
-          </div>
-          <!-- 播放器控制 -->
-          <div v-if="playerShow" class="all-menu general player">
-            <div class="data">
-              <span class="name">{{ playerData.name }}</span>
-              <span class="artist">{{ playerData.artist }}</span>
-            </div>
-            <div class="volume" @click.stop>
-              <i
-                class="iconfont icon-volume-down"
-                @click="playerVolume = Math.max(0, playerVolume - 0.1)"
-              />
-              <Slider :value="playerVolume" @update="(val) => (playerVolume = val)" />
-              <i
-                class="iconfont icon-volume-up"
-                @click="playerVolume = Math.min(1, playerVolume + 0.1)"
-              />
-            </div>
-            <div class="control" @click.stop>
-              <div class="btn" title="上一曲" @click="playerControl('prev')">
-                <i class="iconfont icon-prev"></i>
-              </div>
-              <div v-if="playState" class="btn" title="暂停" @click="playerControl('toggle')">
-                <i class="iconfont icon-pause"></i>
-              </div>
-              <div v-else class="btn" title="播放" @click="playerControl('toggle')">
-                <i class="iconfont icon-play"></i>
-              </div>
-              <div class="btn" title="下一曲" @click="playerControl('next')">
-                <i class="iconfont icon-next"></i>
-              </div>
             </div>
           </div>
         </div>

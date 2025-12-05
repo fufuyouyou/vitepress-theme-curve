@@ -28,16 +28,16 @@
   <Teleport to="body">
     <!-- 左侧菜单 -->
     <div :class="['left-menu', { hidden: footerIsShow }]">
-      <!-- 全局设置 -->
-      <Settings />
-      <!-- 全局播放器 -->
-      <Player />
+<!--      &lt;!&ndash; 全局设置 &ndash;&gt;-->
+<!--      <Settings />-->
+<!--      &lt;!&ndash; 全局播放器 &ndash;&gt;-->
+<!--      <Player />-->
     </div>
   </Teleport>
   <!-- 右键菜单 -->
   <RightMenu ref="rightMenuRef" />
   <!-- 全局消息 -->
-  <Message />
+<!--  <Message />-->
 </template>
 
 <script setup>

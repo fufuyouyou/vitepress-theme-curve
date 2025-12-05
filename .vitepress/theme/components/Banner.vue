@@ -1,10 +1,10 @@
 <template>
   <div v-if="type === 'text'" :class="['banner', bannerType]" id="main-banner">
-    <h1 class="title">你好，欢迎来到{{ theme.siteMeta.title }}</h1>
+    <h1 class="title">你好，欢迎来到我的博客</h1>
     <div class="subtitle">
       <Transition name="fade" mode="out-in">
-        <span :key="hitokotoData?.hitokoto" class="text">
-          {{ hitokotoData?.hitokoto ? hitokotoData?.hitokoto : theme.siteMeta.description }}
+        <span :key="hitokotoData?.content" class="text">
+          {{ hitokotoData?.content ? hitokotoData?.content : theme.siteMeta.description }}
         </span>
       </Transition>
     </div>
@@ -88,9 +88,7 @@ const bannerType = ref(null);
 // 获取一言数据
 const getHitokotoData = async () => {
   try {
-    const result = await getHitokoto();
-    const { hitokoto, from, from_who } = result;
-    hitokotoData.value = { hitokoto, from, from_who };
+    hitokotoData.value = await getHitokoto();
   } catch (error) {
     $message.error("一言获取失败");
     console.error("一言获取失败：", error);

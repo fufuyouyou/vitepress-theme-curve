@@ -3,9 +3,8 @@
  * @param {string} [rule="updated"] - 文章的排序规则，可以是 "created" 或 "updated"
  */
 export const getHitokoto = async () => {
-  const result = await fetch("https://v1.hitokoto.cn");
-  const hitokoto = await result.json();
-  return hitokoto;
+  const result = await fetch("https://v1.jinrishici.com/shuqing.json");
+  return await result.json();
 };
 
 /**
