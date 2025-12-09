@@ -167,23 +167,11 @@ export const themeConfig = {
     // 是否开启封面显示
     showCover: {
       // 是否开启封面显示 文章不设置cover封面会显示异常，可以设置下方默认封面
-      enable: true,
+      enable: false,
       // 封面布局方式: left | right | both
       coverLayout: "both",
       // 默认封面(随机展示)
-      defaultCover: [
-        "/images/1.jpg",
-        "/images/2.jpg",
-        "/images/3.jpg",
-        "/images/4.jpg",
-        "/images/5.jpg",
-        "/images/6.jpg",
-        "/images/7.jpg",
-        "/images/8.jpg",
-        "/images/9.jpg",
-        "/images/10.jpg",
-        "/images/11.jpg",
-      ],
+      defaultCover: [],
     },
   },
   // 页脚信息
