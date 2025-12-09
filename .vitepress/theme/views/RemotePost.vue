@@ -114,8 +114,19 @@ const getShikiTheme = () => {
   return isDark ? "github-dark" : "github-light";
 };
 
+const getCurrentArticleId = () => {
+  try {
+    const r = route;
+    return props.articleId || r?.params?.id || r?.route?.query?.id || r?.query?.id || null;
+  } catch (e) {
+    return props.articleId || null;
+  }
+};
+
 const loadContent = () => {
-  getArticle(props.articleId).then((res) => {
+  const id = getCurrentArticleId();
+  if (!id) return;
+  getArticle(id).then((res) => {
     Object.assign(postMetaData, res.data);
     loadMarkdown();
   });
@@ -280,8 +291,6 @@ const highlightCodeBlocks = async (force = false) => {
 
         setupCopyButton(block, codeElement);
       } catch (error) {
-        console.warn(`高亮代码块失败 (${lang}):`, error);
-
         // 等待 DOM 更新
         await nextTick();
         setupCopyButton(block, codeElement);

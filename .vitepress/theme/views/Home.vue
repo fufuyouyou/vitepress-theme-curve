@@ -31,7 +31,7 @@
 
 <script setup>
 import { mainStore } from "@/store";
-import { pageArticle } from "../api/data.js";
+import { pageArticle, listLabel, listType } from "../api/data.js";
 
 const { theme } = useData();
 const store = mainStore();
@@ -58,29 +58,34 @@ const props = defineProps({
   },
 });
 
-// 每页文章数
 const postSize = theme.value.postSize;
 
-// 列表总数量
+const runtimeTags = ref([]);
+const runtimeCategories = ref([]);
+const totalCount = ref(0);
 const allListTotal = computed(() => {
-  return props.showCategories
-    ? theme.value.categoriesData.find((item) => item.name === props.showCategories)?.articleTotal
-    : props.showTags
-      ? theme.value.tagsData.find((item) => item.name === props.showTags)?.articleTotal
-      : theme.value.postData.length;
+  if (props.showCategories) {
+    const source = runtimeCategories.value && runtimeCategories.value.length ? runtimeCategories.value : theme.value.categoriesData;
+    return source.find((item) => item.name === props.showCategories)?.articleTotal || 0;
+  }
+  if (props.showTags) {
+    const source = runtimeTags.value && runtimeTags.value.length ? runtimeTags.value : theme.value.tagsData;
+    return source.find((item) => item.name === props.showTags)?.articleTotal || 0;
+  }
+  return totalCount.value || theme.value.postData.length;
 });
 
 // 获得当前页数
 const getCurrentPage = () => {
   if (props.showCategories || props.showTags) {
-    if (typeof window === "undefined") return 0;
+    if (typeof window === "undefined") return 1;
     const params = new URLSearchParams(window.location.search);
     const page = params.get("page");
-    if (!page) return 0;
+    if (!page) return 1;
     const currentPage = Number(page);
-    return currentPage ? currentPage - 1 : 0;
+    return currentPage ? currentPage : 1;
   }
-  return props.page ? props.page - 1 : 0;
+  return props.page ? props.page : 1;
 };
 
 const postData = ref([]);
@@ -106,12 +111,23 @@ const listData = async () => {
     // 标签数据
     queryParams.tags = props.showTags;
   }
-  const { data } = await pageArticle({ pageNo: page, pageSize: postSize }, queryParams);
+  const { data, page: pageInfo } = await pageArticle({ pageNo: page, pageSize: postSize }, queryParams);
   postData.value = data;
+  totalCount.value = pageInfo.totalCount;
+};
+
+const initRuntimeData = async () => {
+  const [{ data: tags }, { data: cats }] = await Promise.all([
+    listLabel(),
+    listType()
+  ]);
+  runtimeTags.value = tags || [];
+  runtimeCategories.value = cats || [];
 };
 
 onMounted(() => {
   listData();
+  initRuntimeData();
 });
 
 // 恢复滚动位置

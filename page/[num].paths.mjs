@@ -1,20 +1,13 @@
 import { getThemeConfig } from "../.vitepress/init.mjs";
 import { pageArticle } from "../.vitepress/theme/api/data.js";
 
-const { data: postData } = await pageArticle({ pageNo: 1, pageSize: -1 }, {});
-const themeConfig = await getThemeConfig();
-
-// 每页文章数
-const postsPerPage = themeConfig.postSize;
-
-// 计算总页数
-const totalPages = Math.ceil(postData.length / postsPerPage);
-
-// 文章分页动态路由
 export default {
-  paths() {
+  async paths() {
     const pages = [];
-    // 生成每一页的路由参数
+    const themeConfig = await getThemeConfig();
+    const postsPerPage = themeConfig.postSize;
+    const { data: postData } = await pageArticle({ pageNo: 1, pageSize: -1 }, {});
+    const totalPages = Math.ceil(postData.length / postsPerPage);
     for (let pageNum = 2; pageNum <= totalPages; pageNum += 1) {
       pages.push({ params: { num: pageNum.toString() } });
     }

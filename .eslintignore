@@ -4,3 +4,4 @@ dist
 .cache
 auto-imports.d.ts
 components.d.ts
+**/*.paths.mjs

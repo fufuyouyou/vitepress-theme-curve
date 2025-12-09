@@ -11,7 +11,7 @@
       </a>
       <a href="/" :class="['type-item', { choose: !currentTypeName }]">首页</a>
       <a
-        v-for="(item, index) in theme.categoriesData"
+        v-for="(item, index) in computedCategories"
         :key="index"
         :href="`/pages/categories/${item.name}`"
         :class="['type-item', { hidden: currentTypeName === item.name }]"
@@ -28,10 +28,10 @@
     <div class="all-type">
       <a v-if="currentTypeName" :href="`/pages/tags/${currentTypeName}`" class="type-item choose">
         {{ currentTypeName }}
-        <span class="num">{{ theme.tagsData?.find((item) => item.name === currentTypeName)?.articleTotal || 0 }}</span>
+        <span class="num">{{ computedTags?.find((item) => item.name === currentTypeName)?.articleTotal || 0 }}</span>
       </a>
       <a
-        v-for="(item, index) in theme.tagsData"
+        v-for="(item, index) in computedTags"
         :key="index"
         :href="`/pages/tags/${item.name}`"
         :class="['type-item', { hidden: currentTypeName === item.name }]"
@@ -48,6 +48,7 @@
 </template>
 
 <script setup>
+import { listLabel, listType } from "../../api/data.js";
 const { theme, params } = useData();
 const props = defineProps({
   // 显示类别
@@ -60,6 +61,21 @@ const props = defineProps({
 // 获取当前路由路径
 const currentTypeName = computed(() => {
   return params.value?.name || null;
+});
+
+const tagsData = ref([]);
+const categoriesData = ref([]);
+const computedTags = computed(() => (tagsData.value && tagsData.value.length ? tagsData.value : theme.tagsData));
+const computedCategories = computed(() =>
+  categoriesData.value && categoriesData.value.length ? categoriesData.value : theme.categoriesData,
+);
+
+onMounted(async () => {
+  try {
+    const [{ data: tags }, { data: cats }] = await Promise.all([listLabel(), listType()]);
+    tagsData.value = tags || [];
+    categoriesData.value = cats || [];
+  } catch (e) {}
 });
 </script>
 

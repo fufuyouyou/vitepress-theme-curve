@@ -1,10 +1,9 @@
 import { pageArticle } from "../../.vitepress/theme/api/data.js";
 
-const { data: postData } = await pageArticle({ pageNo: 1, pageSize: -1 }, {});
-
 export default {
-  paths() {
+  async paths() {
     const pages = [];
+    const { data: postData } = await pageArticle({ pageNo: 1, pageSize: -1 }, {});
     postData.forEach((post) => {
       pages.push({ params: { id: post.id, title: post.title } });
     });

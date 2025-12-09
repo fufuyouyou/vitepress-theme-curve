@@ -83,6 +83,8 @@ const quote = computed(() => {
         content: "";
         position: absolute;
         left: 0;
+        top: 50%;
+        transform: translate(0, -50%);
         width: 8px;
         height: 8px;
         opacity: 0.6;

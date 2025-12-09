@@ -2,10 +2,10 @@
   <div class="archives s-card">
     <div class="title">
       <h1 class="name">文章</h1>
-      <sup v-if="theme.postData?.length" class="num">{{ theme.postData.length }}</sup>
+      <sup v-if="displayTotal" class="num">{{ displayTotal }}</sup>
     </div>
     <div class="archives-list">
-      <div v-for="(archives, index) in theme.archivesData" :key="index" class="year-list">
+      <div v-for="(archives, index) in displayArchives" :key="index" class="year-list">
         <span class="year">{{ archives.year }}</span>
         <div class="posts">
           <div
@@ -34,8 +34,31 @@
 </template>
 
 <script setup>
+import { countByYear, pageArticle } from "../api/data.js";
 const { theme } = useData();
 const router = useRouter();
+
+const archivesData = ref([]);
+const postTotal = ref(0);
+const displayArchives = computed(() =>
+  archivesData.value && archivesData.value.length ? archivesData.value : theme.archivesData,
+);
+const displayTotal = computed(() => postTotal.value || (theme.postData?.length || 0));
+
+const loadArchives = async () => {
+  try {
+    const [{ data: archives }, { data: all }] = await Promise.all([
+      countByYear(),
+      pageArticle({ pageNo: 1, pageSize: -1 }, {}),
+    ]);
+    archivesData.value = archives || [];
+    postTotal.value = Array.isArray(all) ? all.length : 0;
+  } catch (e) {}
+};
+
+onMounted(() => {
+  loadArchives();
+});
 </script>
 
 <style lang="scss" scoped>
