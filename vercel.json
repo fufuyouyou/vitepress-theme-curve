@@ -3,6 +3,7 @@
   "framework": "vitepress",
   "outputDirectory": "./.vitepress/dist",
   "rewrites": [
+    { "source": "/pages/article/:id", "destination": "/pages/article/index.html?id=:id" },
     { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
     { "source": "/feed.xml", "destination": "/feed.xml" },
     { "source": "/:path*", "destination": "/index.html" }
