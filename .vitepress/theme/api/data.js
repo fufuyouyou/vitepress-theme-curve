@@ -30,9 +30,9 @@ export const pageArticle = (page, data) => {
   });
 };
 
-export const getContent = (id) => {
+export const getArticle = (id) => {
   return request({
-    url: "/blog/api/getContent",
+    url: "/blog/api/getArticle",
     method: "get",
     params: {
       id,

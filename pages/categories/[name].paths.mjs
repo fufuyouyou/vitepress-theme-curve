@@ -1,6 +1,5 @@
-import { listType, pageArticle } from "../../.vitepress/theme/api/data.js";
+import { listType } from "../../.vitepress/theme/api/data.js";
 
-const { data: postData } = await pageArticle({ pageNo: 1, pageSize: -1 }, {});
 const { data: categoriesData } = await listType();
 
 // 分类动态路由

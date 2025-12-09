@@ -1,6 +1,5 @@
-import { listLabel, pageArticle } from "../../.vitepress/theme/api/data.js";
+import { listLabel } from "../../.vitepress/theme/api/data.js";
 
-const { data: postData } = await pageArticle({ pageNo: 1, pageSize: -1 }, {});
 const { data: tagsData } = await listLabel();
 
 // 标签动态路由

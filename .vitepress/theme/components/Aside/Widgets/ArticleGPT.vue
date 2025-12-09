@@ -1,6 +1,6 @@
 <!-- AI 摘要（假） -->
 <template>
-  <div v-if="frontmatter.articleGPT" class="article-gpt s-card">
+  <div v-if="postData.gptIntro" class="article-gpt s-card">
     <div class="title">
       <span class="name">
         <i class="iconfont icon-robot"></i>
@@ -19,7 +19,6 @@
 </template>
 
 <script setup>
-const { frontmatter } = useData();
 const router = useRouter();
 
 // 摘要数据
@@ -29,10 +28,20 @@ const abstractData = ref("");
 const showIndex = ref(0);
 const showType = ref(false);
 
+const props = defineProps({
+  // 文章数据
+  postData: {
+    type: Object,
+    default: {},
+  },
+});
+
+const gptIntro = computed(() => props.postData?.gptIntro || '');
+
 // 输出摘要
 const typeWriter = (text = null) => {
   try {
-    const data = text || frontmatter.value.articleGPT;
+    const data = text || props.postData.gptIntro;
     if (!data) return false;
     if (showIndex.value < data.length) {
       abstractData.value += data.charAt(showIndex.value++);
@@ -65,7 +74,7 @@ const initAbstract = () => {
 // 输出摘要介绍
 const showOther = () => {
   if (loading.value) return false;
-  const text = frontmatter.value.articleGPT;
+  const text = props.postData.gptIntro;
   showIndex.value = 0;
   loading.value = true;
   abstractData.value = "";
@@ -79,7 +88,7 @@ const showOther = () => {
 };
 
 onMounted(() => {
-  if (frontmatter.value.articleGPT) initAbstract();
+  initAbstract();
 });
 
 onBeforeUnmount(() => {

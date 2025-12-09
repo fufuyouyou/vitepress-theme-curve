@@ -8,7 +8,7 @@
   <!-- 导航栏 -->
   <Nav />
   <!-- 主内容 -->
-  <main :class="['main-layout', { loading: loadingStatus, 'is-post': isPostPage }]">
+  <main :class="['main-layout', { loading: loadingStatus, 'is-post': isPostPage || isRemotePost }]">
     <!-- 404 -->
     <NotFound v-if="page.isNotFound" />
     <!-- 首页 -->
@@ -22,7 +22,7 @@
     </template>
   </main>
   <!-- 页脚 -->
-  <FooterLink v-show="!loadingStatus" :showBar="isPostPage && !page.isNotFound" />
+  <FooterLink v-show="!loadingStatus" :showBar="(isPostPage || isRemotePost) && !page.isNotFound" />
   <Footer v-show="!loadingStatus" />
   <!-- 悬浮菜单 -->
   <Teleport to="body">
@@ -57,7 +57,12 @@ const rightMenuRef = ref(null);
 // 判断是否为文章页面
 const isPostPage = computed(() => {
   const routePath = decodeURIComponent(route.path);
-  return routePath.includes("/posts/") || routePath.includes("/pages/article/");
+  return routePath.includes("/posts/");
+});
+
+const isRemotePost = computed(() => {
+  const routePath = decodeURIComponent(route.path);
+  return routePath.includes("/pages/article/");
 });
 
 // 开启右键菜单

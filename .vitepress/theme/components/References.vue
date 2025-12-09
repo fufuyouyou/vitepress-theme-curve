@@ -1,13 +1,13 @@
 <!-- 参考资料 -->
 <template>
-  <div v-if="references" class="references s-card">
+  <div v-if="quote && quote.length > 0" class="references s-card">
     <div class="title">
       <i class="iconfont icon-quote"></i>
       <span class="title-text">参考资料</span>
     </div>
     <ul class="list">
       <a
-        v-for="(item, index) in references"
+        v-for="(item, index) in quote"
         :key="index"
         :href="item.url"
         class="list-item"
@@ -20,10 +20,21 @@
 </template>
 
 <script setup>
-const { frontmatter } = useData();
+const props = defineProps({
+  // 文章数据
+  postData: {
+    type: Object,
+    default: {},
+  },
+});
 
-// 参考资料
-const references = frontmatter.value?.references;
+const quote = computed(() => {
+  const arr = JSON.parse(props.postData?.quote || '[]');
+  return Array.isArray(arr) ? arr.map((it) => ({
+    title: it?.title || '',
+    url: it?.url || ''
+  })) : [];
+})
 </script>
 
 <style lang="scss" scoped>

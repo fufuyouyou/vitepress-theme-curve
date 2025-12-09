@@ -13,9 +13,10 @@ import RemotePost from "@/views/RemotePost.vue";
 const { params, site } = useData();
 
 onMounted(() => {
-  document.title = `${params.value.title} | ${site.value.title}`;
+  if (params?.value?.title) {
+    document.title = `${params.value.title} | ${site.value.title}`;
+  }
 });
 </script>
 
 <RemotePost :articleId="params.id" />
-
