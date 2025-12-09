@@ -1,19 +1,21 @@
 ---
-title: 分类
+title: 文章详情
 aside: false
 padding: false
+comment: true
 ---
 
 <script setup>
 import { onMounted } from "vue";
 import { useData } from "vitepress";
-import Home from "@/views/Home.vue";
+import RemotePost from "@/views/RemotePost.vue";
 
 const { params, site } = useData();
 
 onMounted(() => {
-  document.title = `${params.value.name} | ${site.value.title}`;
+  document.title = `${params.value.title} | ${site.value.title}`;
 });
 </script>
 
-<Home :showHeader="false" :showCategories="params.name" />
+<RemotePost :articleId="params.id" />
+

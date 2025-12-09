@@ -7,13 +7,13 @@
     </div>
     <div class="all-tags">
       <a
-        v-for="(item, tag, index) in theme.tagsData"
+        v-for="(item, index) in theme.tagsData"
         :key="index"
-        :href="`/pages/tags/${tag}`"
+        :href="`/pages/tags/${item.name}`"
         class="tags"
       >
-        <span class="name">{{ tag }}</span>
-        <sup class="num">{{ item.count }}</sup>
+        <span class="name">{{ item.name }}</span>
+        <sup class="num">{{ item.articleTotal }}</sup>
       </a>
     </div>
     <a href="/pages/tags" class="more-tags">查看全部</a>

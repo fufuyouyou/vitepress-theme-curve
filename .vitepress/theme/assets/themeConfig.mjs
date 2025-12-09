@@ -3,7 +3,7 @@ export const themeConfig = {
   // 站点信息
   siteMeta: {
     // 站点标题
-    title: "浮游",
+    title: "素还真",
     // 站点描述
     description: "记录一些有趣的东西",
     // 站点logo
@@ -14,7 +14,7 @@ export const themeConfig = {
     lang: "zh-CN",
     // 作者
     author: {
-      name: "苏志彬",
+      name: "素还真",
       cover: "/images/logo/logo.png",
       email: "18735880447@139.com",
       link: "https://suzhibin.cn",
@@ -121,11 +121,11 @@ export const themeConfig = {
     {
       text: "专栏",
       items: [
-        { text: "技术分享", link: "/pages/categories/技术分享", icon: "technical" },
-        { text: "我的项目", link: "/pages/project", icon: "code" },
-        { text: "效率工具", link: "/pages/categories/效率工具", icon: "tools" },
+        { text: "技术分享", link: "/pages/categories/技术分享", icon: "code" },
+        { text: "运维笔记", link: "/pages/categories/运维笔记", icon: "technical" },
+        { text: "日常随笔", link: "/pages/categories/日常随笔", icon: "date" },
       ],
-    }
+    },
   ],
   // 导航栏菜单 - 左侧
   navMore: [
@@ -158,7 +158,7 @@ export const themeConfig = {
           url: "https://book.suzhibin.cn",
         },
       ],
-    }
+    },
   ],
   // 封面配置
   cover: {
@@ -169,15 +169,22 @@ export const themeConfig = {
       // 是否开启封面显示 文章不设置cover封面会显示异常，可以设置下方默认封面
       enable: true,
       // 封面布局方式: left | right | both
-      coverLayout: 'both',
+      coverLayout: "both",
       // 默认封面(随机展示)
       defaultCover: [
-        '/images/1.jpg',
-        '/images/2.jpg',
-        '/images/3.jpg',
-        '/images/4.jpg'
-      ]
-    }
+        "/images/1.jpg",
+        "/images/2.jpg",
+        "/images/3.jpg",
+        "/images/4.jpg",
+        "/images/5.jpg",
+        "/images/6.jpg",
+        "/images/7.jpg",
+        "/images/8.jpg",
+        "/images/9.jpg",
+        "/images/10.jpg",
+        "/images/11.jpg",
+      ],
+    },
   },
   // 页脚信息
   footer: {
@@ -198,7 +205,7 @@ export const themeConfig = {
       {
         icon: "email",
         link: "mailto:18735880447@139.com",
-      }
+      },
     ],
     // sitemap
     sitemap: [],
@@ -231,7 +238,7 @@ export const themeConfig = {
     // 站点简介
     hello: {
       enable: true,
-      text: "本站内容为个人学习记录，主要记录自己的学习过程和思考，也会分享一些常用的工具和技巧，希望能对大家有所帮助。",
+      text: "非吾小天下，才高而已；非吾纵古今，时赋而已；非吾睨九州，宏观而已；三非焉罪？无梦至胜。",
     },
     // 目录
     toc: {
@@ -253,7 +260,7 @@ export const themeConfig = {
     // 站点数据
     siteData: {
       enable: true,
-    }
+    },
   },
   // 友链
   friends: {
@@ -282,7 +289,7 @@ export const themeConfig = {
   // 搜索
   // https://www.algolia.com/
   search: {
-    enable: true,
+    enable: false,
     appId: "",
     apiKey: "",
   },

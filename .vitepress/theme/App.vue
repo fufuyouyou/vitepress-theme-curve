@@ -8,7 +8,7 @@
   <!-- 导航栏 -->
   <Nav />
   <!-- 主内容 -->
-  <main :class="['mian-layout', { loading: loadingStatus, 'is-post': isPostPage }]">
+  <main :class="['main-layout', { loading: loadingStatus, 'is-post': isPostPage }]">
     <!-- 404 -->
     <NotFound v-if="page.isNotFound" />
     <!-- 首页 -->
@@ -57,7 +57,7 @@ const rightMenuRef = ref(null);
 // 判断是否为文章页面
 const isPostPage = computed(() => {
   const routePath = decodeURIComponent(route.path);
-  return routePath.includes("/posts/");
+  return routePath.includes("/posts/") || routePath.includes("/pages/article/");
 });
 
 // 开启右键菜单
@@ -84,7 +84,6 @@ const changeSiteThemeType = () => {
   };
   // 必要数据
   const htmlElement = document.documentElement;
-  console.log("当前模式：", themeType.value);
   // 清除所有 class
   Object.values(themeClasses).forEach((themeClass) => {
     htmlElement.classList.remove(themeClass);
@@ -130,7 +129,6 @@ watch(
 );
 
 onMounted(() => {
-  console.log(frontmatter.value, page.value, theme.value);
   // 全站置灰
   specialDayGray();
   // 更改主题类别
@@ -154,9 +152,10 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
-.mian-layout {
+.main-layout {
   width: 100%;
   max-width: 1400px;
+  min-height: calc(100vh - 163px);
   margin: 0 auto;
   padding: 1rem 2rem;
   // 手动实现加载动画

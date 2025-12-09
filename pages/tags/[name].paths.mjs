@@ -1,15 +1,15 @@
-import { getAllPosts, getAllType } from "../../.vitepress/theme/utils/getPostData.mjs";
+import { listLabel, pageArticle } from "../../.vitepress/theme/api/data.js";
 
-const postData = await getAllPosts();
-const tagsData = getAllType(postData);
+const { data: postData } = await pageArticle({ pageNo: 1, pageSize: -1 }, {});
+const { data: tagsData } = await listLabel();
 
 // 标签动态路由
 export default {
   paths() {
     const pages = [];
     // 生成每一页的路由参数
-    Object.keys(tagsData).forEach((key) => {
-      pages.push({ params: { name: key.toString() } });
+    tagsData.forEach((item) => {
+      pages.push({ params: { name: item.name } });
     });
     console.info("标签动态路由：", pages);
     return pages;

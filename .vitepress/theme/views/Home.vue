@@ -31,6 +31,7 @@
 
 <script setup>
 import { mainStore } from "@/store";
+import { pageArticle } from "../api/data.js";
 
 const { theme } = useData();
 const store = mainStore();
@@ -62,13 +63,11 @@ const postSize = theme.value.postSize;
 
 // 列表总数量
 const allListTotal = computed(() => {
-  const data = props.showCategories
-    ? theme.value.categoriesData[props.showCategories]?.articles
+  return props.showCategories
+    ? theme.value.categoriesData.find((item) => item.name === props.showCategories)?.articleTotal
     : props.showTags
-      ? theme.value.tagsData[props.showTags]?.articles
-      : theme.value.postData;
-  // 返回数量
-  return data ? data.length : 0;
+      ? theme.value.tagsData.find((item) => item.name === props.showTags)?.articleTotal
+      : theme.value.postData.length;
 });
 
 // 获得当前页数
@@ -84,25 +83,35 @@ const getCurrentPage = () => {
   return props.page ? props.page - 1 : 0;
 };
 
+const postData = ref([]);
+
+watch(
+  () => props.page,
+  async () => {
+    await listData();
+  },
+);
+
 // 根据页数计算列表数据
-const postData = computed(() => {
+const listData = async () => {
   const page = getCurrentPage();
-  console.log("当前页数：", page);
-  let data = null;
+  const queryParams = {
+    type: "",
+    tags: "",
+  };
   // 分类数据
   if (props.showCategories) {
-    data = theme.value.categoriesData[props.showCategories]?.articles;
+    queryParams.type = props.showCategories;
+  } else if (props.showTags) {
+    // 标签数据
+    queryParams.tags = props.showTags;
   }
-  // 标签数据
-  else if (props.showTags) {
-    data = theme.value.tagsData[props.showTags]?.articles;
-  }
-  // 文章数据
-  else {
-    data = theme.value.postData;
-  }
-  // 返回列表
-  return data ? data.slice(page * postSize, page * postSize + postSize) : [];
+  const { data } = await pageArticle({ pageNo: page, pageSize: postSize }, queryParams);
+  postData.value = data;
+};
+
+onMounted(() => {
+  listData();
 });
 
 // 恢复滚动位置
@@ -110,7 +119,6 @@ const restoreScrollY = (val) => {
   if (typeof window === "undefined" || val) return false;
   const scrollY = store.lastScrollY;
   nextTick().then(() => {
-    console.log("滚动位置：", scrollY);
     // 平滑滚动
     window.scrollTo({
       top: scrollY,
@@ -134,14 +142,17 @@ watch(
     width: 100%;
     display: flex;
     flex-direction: row;
+
     .posts-content {
       width: calc(100% - 300px);
       transition: width 0.3s;
     }
+
     .main-aside {
       width: 300px;
       padding-left: 1rem;
     }
+
     @media (max-width: 1200px) {
       .posts-content {
         width: 100%;

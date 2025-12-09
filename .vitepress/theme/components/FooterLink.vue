@@ -6,48 +6,17 @@
       <span class="site-desc">{{ site.description }}</span>
       <a href="/" class="to-home">了解更多</a>
     </div>
-    <div class="footer-social">
-      <a
-        v-for="(item, index) in socialLinkData.first"
-        :key="index"
-        :href="item.link"
-        target="_blank"
-        class="social-link"
-      >
-        <i :class="`iconfont icon-${item.icon}`"></i>
-      </a>
-      <a
-        v-for="(item, index) in socialLinkData.second"
-        :key="index"
-        :href="item.link"
-        target="_blank"
-        class="social-link"
-      >
-        <i :class="`iconfont icon-${item.icon}`"></i>
-      </a>
-    </div>
   </div>
 </template>
 
 <script setup>
-import { smoothScrolling } from "@/utils/helper";
-
-const { theme, site } = useData();
-const { footer, siteMeta } = theme.value;
+const { site } = useData();
 const props = defineProps({
   // 显示底栏
   showBar: {
     type: Boolean,
     default: true,
   },
-});
-
-// 社交链接数据
-const socialLinkData = computed(() => {
-  const halfLength = Math.ceil(footer.social.length / 2);
-  const firstHalf = footer.social.slice(0, halfLength);
-  const secondHalf = footer.social.slice(halfLength);
-  return { first: firstHalf, second: secondHalf };
 });
 </script>
 

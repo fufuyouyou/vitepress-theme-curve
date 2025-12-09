@@ -12,7 +12,7 @@ import Home from "@/views/Home.vue";
 const { params, site } = useData();
 
 onMounted(() => {
-  document.title = `标签：${params.value.name} | ${site.value.title}`;
+  document.title = `${params.value.name} | ${site.value.title}`;
 });
 </script>
 

@@ -1,0 +1,456 @@
+<template>
+  <div v-if="postMetaData" class="post">
+    <div class="post-meta">
+      <div class="meta">
+        <div class="categories" v-if="postMetaData.categories?.length">
+          <a
+            v-for="(item, index) in postMetaData.categories"
+            :key="index"
+            :href="`/pages/categories/${item}`"
+            class="cat-item"
+          >
+            <i class="iconfont icon-folder" />
+            <span class="name">{{ item }}</span>
+          </a>
+        </div>
+        <div class="tags" v-if="postMetaData.tags?.length">
+          <a
+            v-for="(item, index) in postMetaData.tags"
+            :key="index"
+            :href="`/pages/tags/${item}`"
+            class="tag-item"
+          >
+            <i class="iconfont icon-hashtag" />
+            <span class="name">{{ item }}</span>
+          </a>
+        </div>
+      </div>
+      <h1 class="title">{{ postMetaData.title || "未命名文章" }}</h1>
+      <div class="other-meta">
+        <span class="meta date" v-if="postMetaData.date">
+          <i class="iconfont icon-date" />
+          {{ formatTimestamp(new Date(postMetaData.date).getTime()) }}
+        </span>
+        <span class="update meta" v-if="postMetaData.lastModified">
+          <i class="iconfont icon-time" />
+          {{ formatTimestamp(new Date(postMetaData.lastModified).getTime()) }}
+        </span>
+        <span class="hot meta">
+          <i class="iconfont icon-fire" />
+          <span id="twikoo_visitors" class="artalk-pv-count">0</span>
+        </span>
+        <span class="chat meta hover" @click="commentRef?.scrollToComments">
+          <i class="iconfont icon-chat" />
+          <span id="twikoo_comments" class="artalk-comment-count">0</span>
+        </span>
+      </div>
+    </div>
+    <div class="post-content">
+      <article class="post-article s-card">
+        <div class="expired s-card" v-if="expiredDays >= 180">
+          本文发表于 <strong>{{ expiredDays }}</strong> 天前，其中的信息可能已经事过境迁
+        </div>
+        <ArticleGPT />
+        <div id="page-content" class="markdown-main-style" v-html="html" />
+        <References />
+        <Copyright v-if="frontmatter.copyright !== false" :postData="postMetaData" />
+        <div class="other-meta">
+          <div class="all-tags" v-if="postMetaData.tags?.length">
+            <a
+              v-for="(item, index) in postMetaData.tags"
+              :key="index"
+              :href="`/pages/tags/${item}`"
+              class="tag-item"
+            >
+              <i class="iconfont icon-hashtag" />
+              <span class="name">{{ item }}</span>
+            </a>
+          </div>
+          <a
+            href="https://eqnxweimkr5.feishu.cn/share/base/form/shrcnCXCPmxCKKJYI3RKUfefJre"
+            class="report"
+            target="_blank"
+          >
+            <i class="iconfont icon-report" />
+            反馈与投诉
+          </a>
+        </div>
+        <RewardBtn />
+        <Comments ref="commentRef" />
+      </article>
+      <Aside showToc />
+    </div>
+  </div>
+  <div v-else class="post">
+    <div class="post-content">
+      <article class="post-article s-card">
+        <div class="markdown-main-style">正在加载文章内容...</div>
+      </article>
+    </div>
+  </div>
+  <LazyLoader />
+</template>
+
+<script setup>
+import MarkdownIt from "markdown-it";
+import matter from "gray-matter";
+import { daysFromNow, formatTimestamp } from "@/utils/helper";
+import initFancybox from "@/utils/initFancybox";
+import markdownConfig from "@/utils/markdownConfig.mjs";
+import { getContent } from "@/api/data";
+
+const route = useRoute();
+const { theme, frontmatter, site } = useData();
+
+const props = defineProps({
+  articleId: {
+    type: [null, String],
+    default: null,
+  },
+});
+
+const commentRef = ref(null);
+const html = ref("");
+const postMetaData = ref(null);
+const expiredDays = ref(0);
+
+const md = new MarkdownIt({ html: true, linkify: true, breaks: false });
+markdownConfig(md, theme.value);
+
+const extractTitleFromMarkdown = (content) => {
+  const match = content.match(/^#\s+(.+)$/m);
+  return match ? match[1].trim() : null;
+};
+
+const loadRemoteMarkdown = async () => {
+  try {
+    const id = props.articleId;
+    if (!id) return;
+    const res = await getContent(id);
+    console.log("res", res);
+    const mdText = res?.data?.content || res?.content || res?.data || "";
+    const parsed = matter(mdText || "");
+    const title = parsed.data?.title || extractTitleFromMarkdown(parsed.content) || "未命名文章";
+    const lastModified = parsed.data?.lastModified || parsed.data?.updated || parsed.data?.date;
+    postMetaData.value = {
+      title,
+      date: parsed.data?.date || null,
+      lastModified: lastModified || null,
+      tags: parsed.data?.tags || [],
+      categories: parsed.data?.categories || parsed.data?.type || [],
+    };
+    expiredDays.value = postMetaData.value.date ? daysFromNow(postMetaData.value.date) : 0;
+    html.value = md.render(parsed.content || mdText || "");
+    await nextTick();
+    initFancybox(theme.value);
+    if (postMetaData.value?.title) {
+      document.title = `${postMetaData.value.title} | ${site.value.title}`;
+    }
+  } catch (error) {
+    console.error("加载在线 Markdown 出错：", error);
+  }
+};
+
+onMounted(() => {
+  console.log("postId", props.articleId);
+  loadRemoteMarkdown();
+});
+</script>
+
+<style lang="scss" scoped>
+@use "../style/post.scss";
+
+.post {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  animation: fade-up 0.6s 0.1s backwards;
+
+  .post-meta {
+    padding: 2rem 0 3rem 18px;
+    width: 100%;
+
+    .meta {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .categories {
+        margin-right: 12px;
+
+        .cat-item {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          padding: 6px 12px;
+          font-size: 14px;
+          font-weight: bold;
+          border-radius: 8px;
+          background-color: var(--main-mask-Inverse-background);
+          opacity: 0.8;
+
+          .iconfont {
+            margin-right: 6px;
+          }
+
+          &:hover {
+            color: var(--main-color);
+            background-color: var(--main-color-bg);
+
+            .iconfont {
+              color: var(--main-color);
+            }
+          }
+        }
+      }
+
+      .tags {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        .tag-item {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          padding: 6px 12px;
+          font-size: 14px;
+          font-weight: bold;
+          border-radius: 8px;
+          opacity: 0.8;
+
+          .iconfont {
+            margin-right: 4px;
+            opacity: 0.6;
+            font-weight: normal;
+          }
+
+          &:hover {
+            color: var(--main-color);
+            background-color: var(--main-color-bg);
+
+            .iconfont {
+              color: var(--main-color);
+            }
+          }
+        }
+      }
+    }
+
+    .title {
+      font-size: 2.2rem;
+      line-height: 1.2;
+      color: var(--main-font-color);
+      margin: 1.4rem 0;
+    }
+
+    .other-meta {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .meta {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 6px 12px;
+        font-size: 14px;
+        border-radius: 8px;
+        opacity: 0.8;
+
+        .iconfont {
+          margin-right: 6px;
+          transition: color 0.3s;
+        }
+
+        &.date {
+          padding-left: 0;
+        }
+
+        &.hot {
+          .iconfont {
+            font-size: 18px;
+          }
+        }
+
+        &.hover {
+          transition:
+            color 0.3s,
+            background-color 0.3s;
+          cursor: pointer;
+
+          &:hover {
+            color: var(--main-color);
+            background-color: var(--main-color-bg);
+
+            .iconfont {
+              color: var(--main-color);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .post-content {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    animation: fade-up 0.6s 0.3s backwards;
+
+    .post-article {
+      width: calc(100% - 300px);
+      padding: 1rem 2.2rem 2.2rem 2.2rem;
+      user-select: text;
+      cursor: auto;
+
+      &:hover {
+        border-color: var(--main-card-border);
+      }
+
+      .expired {
+        margin: 1.2rem 0 2rem 0;
+        padding: 0.8rem 1.2rem;
+        border-left: 6px solid var(--main-warning-color);
+        border-radius: 6px 16px 16px 6px;
+        user-select: none;
+
+        strong {
+          color: var(--main-warning-color);
+        }
+      }
+
+      .other-meta {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        margin: 2rem 0;
+        opacity: 0.8;
+
+        .all-tags {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+
+          .tag-item {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 6px 12px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 8px;
+            background-color: var(--main-card-border);
+            margin-right: 12px;
+
+            .iconfont {
+              margin-right: 4px;
+              opacity: 0.6;
+              font-weight: normal;
+            }
+
+            &:hover {
+              color: var(--main-color);
+              background-color: var(--main-color-bg);
+
+              .iconfont {
+                color: var(--main-color);
+              }
+            }
+          }
+        }
+
+        .report {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          padding: 6px 12px;
+          font-size: 14px;
+          font-weight: bold;
+          border-radius: 8px;
+          background-color: var(--main-card-border);
+
+          .iconfont {
+            margin-right: 6px;
+          }
+
+          &:hover {
+            color: #efefef;
+            background-color: var(--main-error-color);
+
+            .iconfont {
+              color: #efefef;
+            }
+          }
+        }
+      }
+    }
+
+    .main-aside {
+      width: 300px;
+      padding-left: 1rem;
+    }
+
+    @media (max-width: 1200px) {
+      .post-article {
+        width: 100%;
+      }
+      .main-aside {
+        display: none;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .post-meta {
+      padding: 4rem 1.5rem;
+
+      .meta {
+        justify-content: center;
+
+        .categories {
+          margin-right: 0;
+        }
+
+        .tags {
+          display: none;
+        }
+      }
+
+      .title {
+        font-size: 1.6rem;
+        text-align: center;
+        line-height: 40px;
+      }
+
+      .other-meta {
+        justify-content: center;
+      }
+    }
+    .post-content {
+      .post-article {
+        border: none;
+        padding: 20px 30px;
+
+        .other-meta {
+          margin: 1rem 0 2rem 0;
+          flex-direction: column;
+
+          .all-tags {
+            flex-wrap: wrap;
+
+            .tag-item {
+              margin-top: 12px;
+            }
+          }
+
+          .report {
+            margin-top: 20px;
+          }
+        }
+      }
+    }
+  }
+}
+</style>

@@ -31,17 +31,17 @@
         <!-- 导航栏菜单 -->
         <div class="nav-center">
           <div class="site-menu">
-            <div v-for="(item, index) in theme.nav" :key="index" class="menu-item">
-              <span class="link-btn"> {{ item.text }}</span>
-              <div v-if="item.items" class="link-child">
+            <div v-for="(item, index) in navList" :key="index" class="menu-item">
+              <span class="link-btn"> {{ item.name }}</span>
+              <div v-if="item.children" class="link-child">
                 <span
-                  v-for="(child, childIndex) in item.items"
+                  v-for="(child, childIndex) in item.children"
                   :key="childIndex"
                   class="link-child-btn"
-                  @click="router.go(child.link)"
+                  @click="router.go(child.url)"
                 >
                   <i v-if="child.icon" :class="`iconfont icon-${child.icon}`" />
-                  {{ child.text }}
+                  {{ child.name }}
                 </span>
               </div>
             </div>
@@ -129,11 +129,20 @@
 import { storeToRefs } from "pinia";
 import { mainStore } from "@/store";
 import { smoothScrolling, shufflePost } from "@/utils/helper";
+import { listNav } from "../api/data.js";
 
 const router = useRouter();
 const store = mainStore();
 const { scrollData } = storeToRefs(store);
 const { site, theme, frontmatter, page } = useData();
+
+const navList = ref([]);
+
+onMounted(() => {
+  listNav().then((res) => {
+    navList.value = res.data;
+  });
+});
 </script>
 
 <style lang="scss" scoped>

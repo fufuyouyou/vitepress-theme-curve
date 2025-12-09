@@ -1,7 +1,7 @@
-import { getAllPosts } from "../.vitepress/theme/utils/getPostData.mjs";
 import { getThemeConfig } from "../.vitepress/init.mjs";
+import { pageArticle } from "../.vitepress/theme/api/data.js";
 
-const postData = await getAllPosts();
+const { data: postData } = await pageArticle({ pageNo: 1, pageSize: -1 }, {});
 const themeConfig = await getThemeConfig();
 
 // 每页文章数

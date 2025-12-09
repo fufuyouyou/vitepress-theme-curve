@@ -16,6 +16,7 @@
 <script setup>
 import { generateId } from "@/utils/commonTools";
 import { shufflePost } from "@/utils/helper";
+import { pageArticle } from "../api/data.js";
 
 const router = useRouter();
 const { theme, page, frontmatter } = useData();
@@ -24,13 +25,13 @@ const { theme, page, frontmatter } = useData();
 const relatedData = ref(null);
 
 // 获取同一分类的文章
-const getRelatedData = () => {
+const getRelatedData = async () => {
   // 分类名
   const catName = frontmatter.value.categories?.[0];
   // 指定分类数据
-  const postData = theme.value.categoriesData?.[catName]?.articles;
+  const { data: postData } = await pageArticle({ pageNo: 1, pageSize: -1 },  { type: catName })
   // 本篇索引
-  const postId = generateId(page.value?.filePath);
+  const postId = page.value?.filePath;
   // 过滤掉当前文章
   const filteredPosts = postData.filter((post) => post.id !== postId);
   // 取出两篇文章

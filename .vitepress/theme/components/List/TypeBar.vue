@@ -11,12 +11,12 @@
       </a>
       <a href="/" :class="['type-item', { choose: !currentTypeName }]">首页</a>
       <a
-        v-for="(_, key, index) in theme.categoriesData"
+        v-for="(item, index) in theme.categoriesData"
         :key="index"
-        :href="`/pages/categories/${key}`"
-        :class="['type-item', { hidden: currentTypeName === key }]"
+        :href="`/pages/categories/${item.name}`"
+        :class="['type-item', { hidden: currentTypeName === item.name }]"
       >
-        {{ key }}
+        {{ item.name }}
       </a>
     </div>
     <a href="/pages/categories" class="more-type">
@@ -28,16 +28,16 @@
     <div class="all-type">
       <a v-if="currentTypeName" :href="`/pages/tags/${currentTypeName}`" class="type-item choose">
         {{ currentTypeName }}
-        <span class="num">{{ theme.tagsData?.[currentTypeName]?.count || 0 }}</span>
+        <span class="num">{{ theme.tagsData?.find((item) => item.name === currentTypeName)?.articleTotal || 0 }}</span>
       </a>
       <a
-        v-for="(item, key, index) in theme.tagsData"
+        v-for="(item, index) in theme.tagsData"
         :key="index"
-        :href="`/pages/tags/${key}`"
-        :class="['type-item', { hidden: currentTypeName === key }]"
+        :href="`/pages/tags/${item.name}`"
+        :class="['type-item', { hidden: currentTypeName === item.name }]"
       >
-        {{ key }}
-        <span class="num">{{ item.count }}</span>
+        {{ item.name }}
+        <span class="num">{{ item.articleTotal }}</span>
       </a>
     </div>
     <a href="/pages/tags" class="more-type">
