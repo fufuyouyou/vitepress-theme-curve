@@ -66,33 +66,35 @@
     font-size: 1.1rem;
   }
   p,
+  ul,
+  li,
   td {
     margin: 1rem 0;
     text-align: left;
     letter-spacing: 0.6px;
     line-height: 2;
-    // 行内代码
-    code {
-      display: inline-flex;
-      font-size: 0.8rem;
-      padding: 0 6px;
-      border-radius: 6px;
-      background-color: var(--main-card-border);
-      font-family: "Fira Code", var(--main-font-family), monospace;
-      font-optical-sizing: auto;
-      white-space: nowrap;
-      transform: translateY(-2px);
-      overflow-x: auto;
-      max-width: 100%;
-      transition:
-        color 0.3s,
-        background-color 0.3s;
-      cursor: pointer;
-      &:hover {
-        color: var(--main-color);
-        background-color: var(--main-color-bg);
-      }
-    }
+    //// 行内代码
+    //code {
+    //  display: inline-flex;
+    //  font-size: 0.8rem;
+    //  padding: 0 6px;
+    //  border-radius: 6px;
+    //  background-color: var(--main-card-border);
+    //  font-family: "Fira Code", var(--main-font-family), monospace;
+    //  font-optical-sizing: auto;
+    //  white-space: nowrap;
+    //  transform: translateY(-2px);
+    //  overflow-x: auto;
+    //  max-width: 100%;
+    //  transition:
+    //    color 0.3s,
+    //    background-color 0.3s;
+    //  cursor: pointer;
+    //  &:hover {
+    //    color: var(--main-color);
+    //    background-color: var(--main-color-bg);
+    //  }
+    //}
     // 超链接
     a {
       position: relative;
