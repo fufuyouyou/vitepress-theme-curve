@@ -40,10 +40,7 @@ const getAllTitle = () => {
   try {
     postDom.value = document.getElementById("page-content");
     if (!postDom.value) return false;
-    // 所有标题
-    const headers = Array.from(postDom.value.querySelectorAll("h2, h3")).filter(
-      (header) => header.parentElement.tagName.toLowerCase() === "div",
-    );
+    const headers = Array.from(postDom.value.querySelectorAll("h2, h3"));
     return headers;
   } catch (error) {
     console.error("获取所有目录数据出错：", error);
@@ -51,6 +48,14 @@ const getAllTitle = () => {
 };
 
 // 生成目录数据
+const slugify = (text) =>
+  (text || "")
+    .replace(/\u200B/g, "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w\-\u4e00-\u9fa5]/g, "") || "section";
+
 const generateDirData = () => {
   // 所有标题
   const headers = getAllTitle();
@@ -58,6 +63,14 @@ const generateDirData = () => {
   // 构造目录数据
   const nestedData = [];
   headers.forEach((header) => {
+    if (!header.id || !header.id.trim()) {
+      let id = slugify(header.textContent || "");
+      let i = 2;
+      while (document.getElementById(id)) {
+        id = `${id}-${i++}`;
+      }
+      header.id = id;
+    }
     const headerObj = {
       id: header.id,
       type: header.tagName,
@@ -96,10 +109,10 @@ const activeTocItem = throttle(
 const scrollToHeader = (id) => {
   try {
     const headerDom = document.getElementById(id);
-    if (!headerDom || !postDom.value) return false;
-    const headerTop = headerDom.offsetTop;
-    const scrollHeight = headerTop + postDom.value.offsetTop - 80;
-    window.scroll({ top: scrollHeight, behavior: "smooth" });
+    if (!headerDom) return false;
+    const rectTop = headerDom.getBoundingClientRect().top;
+    const top = window.scrollY + rectTop - 80;
+    window.scrollTo({ top, behavior: "smooth" });
   } catch (error) {
     console.error("目录滚动失败：", error);
   }
@@ -140,6 +153,12 @@ onMounted(() => {
   generateDirData();
   // 滚动监听
   window.addEventListener("scroll", activeTocItem);
+  // 内容变化监听，确保异步渲染后目录更新
+  const container = document.getElementById("page-content");
+  if (container) {
+    const observer = new MutationObserver(() => generateDirData());
+    observer.observe(container, { childList: true, subtree: true });
+  }
 });
 
 onBeforeUnmount(() => {

@@ -1,8 +1,6 @@
-import { getThemeConfig } from "../../.vitepress/init.mjs";
 import { pageArticle } from "../../.vitepress/theme/api/data.js";
 
 const { data: postData } = await pageArticle({ pageNo: 1, pageSize: -1 }, {});
-const themeConfig = await getThemeConfig();
 
 export default {
   paths() {

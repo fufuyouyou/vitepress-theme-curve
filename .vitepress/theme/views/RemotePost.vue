@@ -14,7 +14,7 @@
         </div>
         <div class="tags">
           <a
-            v-for="(item, index) in postMetaData.tags.split(',')"
+            v-for="(item, index) in (postMetaData.tags?.split(',') || [])"
             :key="index"
             :href="`/pages/tags/${item}`"
             class="tag-item"
@@ -56,7 +56,7 @@
         <div class="other-meta">
           <div class="all-tags">
             <a
-              v-for="(item, index) in postMetaData.tags.split(',')"
+              v-for="(item, index) in (postMetaData.tags?.split(',') || [])"
               :key="index"
               :href="`/pages/tags/${item}`"
               class="tag-item"
@@ -78,8 +78,7 @@
 
 <script setup>
 import MarkdownIt from "markdown-it";
-import matter from "gray-matter";
-import { daysFromNow, formatTimestamp } from "@/utils/helper";
+import { formatTimestamp } from "@/utils/helper";
 import initFancybox from "@/utils/initFancybox";
 import { getArticle } from "@/api/data";
 import markdownConfig from "@/utils/markdownConfig.mjs";
@@ -101,6 +100,119 @@ const html = ref("");
 // 获取对应文章数据
 const postMetaData = reactive({});
 
+let md;
+let highlighter = null;
+
+const stripFrontMatter = (s) => {
+  if (!s) return "";
+  const m = s.match(/^---\s*[\r\n]+([\s\S]*?)[\r\n]+---\s*[\r\n]*/);
+  return m ? s.slice(m[0].length) : s;
+};
+
+const initShiki = async () => {
+  try {
+    const shiki = await import("shiki");
+    highlighter = await shiki.getSingletonHighlighter({
+      themes: ["github-light", "github-dark"],
+      langs: [
+        "javascript",
+        "typescript",
+        "tsx",
+        "jsx",
+        "json",
+        "yaml",
+        "xml",
+        "html",
+        "shellscript",
+        "java",
+        "python",
+        "vue",
+        "css",
+        "scss",
+        "markdown",
+      ],
+    });
+  } catch (e) {
+    console.warn("Shiki 高亮初始化失败，使用纯文本回退", e);
+    highlighter = null;
+  }
+};
+
+const normalizeLang = (l) => {
+  const s = (l || "text").toLowerCase();
+  const map = {
+    sh: "shellscript",
+    shell: "shellscript",
+    bash: "shellscript",
+    yml: "yaml",
+    js: "javascript",
+    ts: "typescript",
+    md: "markdown",
+  };
+  return map[s] || s;
+};
+
+const initCopyButtons = () => {
+  const container = document.getElementById("page-content");
+  if (!container) return;
+  container.querySelectorAll('[class^="language-"] .copy').forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      // 优先使用渲染阶段注入的原始代码，避免复制到行号
+      const raw = btn.dataset.code;
+      let text = raw ? decodeURIComponent(raw) : "";
+      if (!text) {
+        const block = btn.closest('[class^="language-"]');
+        const pre = block?.querySelector('pre');
+        const codeEl = pre?.querySelector('code') || pre;
+        if (!codeEl) return;
+        const lineNodes = codeEl.querySelectorAll('.line');
+        if (lineNodes.length) {
+          text = Array.from(lineNodes)
+            .map((l) => (l.textContent || '').replace(/\s+$/,''))
+            .join("\n");
+        } else {
+          text = (codeEl.textContent || '').replace(/\s+$/,'');
+        }
+      }
+      navigator.clipboard?.writeText(text).then(() => {
+        btn.classList.add("copied");
+        setTimeout(() => btn.classList.remove("copied"), 1200);
+      });
+    });
+  });
+};
+
+const slugify = (text) => {
+  const base = (text || "")
+    .replace(/\u200B/g, "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w\-\u4e00-\u9fa5]/g, "");
+  return base || "section";
+};
+
+const initHeadingAnchors = () => {
+  const container = document.getElementById("page-content");
+  if (!container) return;
+  const headers = container.querySelectorAll('h2, h3');
+  const used = new Map();
+  headers.forEach((h) => {
+    if (h.id && h.id.trim()) return;
+    let id = slugify(h.textContent || "");
+    if (used.has(id)) {
+      const n = used.get(id) + 1;
+      used.set(id, n);
+      id = `${id}-${n}`;
+    } else {
+      used.set(id, 1);
+    }
+    h.id = id;
+  });
+};
+
 const loadContent = () => {
   getArticle(props.articleId).then((res) => {
     Object.assign(postMetaData, res.data);
@@ -111,16 +223,44 @@ const loadContent = () => {
 const loadMarkdown = async () => {
   try {
     const mdText = postMetaData.content || "";
-    const parsed = matter(mdText || "");
-    html.value = md.render(parsed.content || mdText || "");
-    await nextTick();
+  const content = stripFrontMatter(mdText || "");
+  html.value = md.render(content || "");
+  await nextTick();
+  initCopyButtons();
+  initHeadingAnchors();
   } catch (error) {
     console.error("加载在线 Markdown 出错：", error);
   }
 }
 
-onMounted(() => {
-  const md = new MarkdownIt({ html: true, linkify: true, breaks: false });
+onMounted(async () => {
+  await initShiki();
+  md = new MarkdownIt({ html: true, linkify: true, breaks: false });
+  // 使用 Shiki 统一代码块渲染（与本地文件更一致）
+  md.renderer.rules.fence = (tokens, idx) => {
+    const token = tokens[idx];
+    const info = (token.info || "").trim();
+    const lang = info || "text";
+    const langNorm = normalizeLang(lang);
+    const code = token.content || "";
+    let preHtml = `<pre><code>${code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
+    if (highlighter) {
+      const isDark = document.documentElement.classList.contains("dark");
+      const themeName = isDark ? "github-dark" : "github-light";
+      try {
+        preHtml = highlighter.codeToHtml(code, { lang: langNorm, theme: themeName });
+      } catch (e) {
+        preHtml = `<pre><code>${code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
+      }
+    }
+    const lineCount = (code.match(/\n/g) || []).length + 1;
+    const numbers = new Array(lineCount)
+      .fill(0)
+      .map((_, i) => `<span class="line-number">${i + 1}</span><br>`)
+      .join("");
+    const encoded = encodeURIComponent(code);
+    return `<div class="language-${lang}" style="--shiki-light: var(--main-font-color); --shiki-dark: var(--main-font-color);"><button class="copy" data-code="${encoded}"></button><span class="lang">${lang}</span><span class="line-numbers-wrapper">${numbers}</span>${preHtml}</div>`;
+  };
   markdownConfig(md, theme.value);
   initFancybox(theme.value);
   loadContent();
