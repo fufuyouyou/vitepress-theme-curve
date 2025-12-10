@@ -6,7 +6,7 @@
         <i class="iconfont icon-robot"></i>
         文章摘要
       </span>
-      <span :class="['logo', { loading }]" @click="showOther"> FakeGPT </span>
+      <span :class="['logo', { loading }]" @click="showOther"> Reload </span>
     </div>
     <div class="content s-card">
       <span class="text">{{ abstractData === "" ? "加载中..." : abstractData }}</span>
