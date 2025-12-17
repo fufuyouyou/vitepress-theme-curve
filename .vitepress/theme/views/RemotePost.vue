@@ -655,6 +655,8 @@ onMounted(async () => {
       line-height: 1.2;
       color: var(--main-font-color);
       margin: 1.4rem 0;
+      padding: 0;
+      text-align: left;
     }
 
     .other-meta {

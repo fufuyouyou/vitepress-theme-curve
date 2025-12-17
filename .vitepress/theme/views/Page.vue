@@ -5,7 +5,7 @@
       <!-- 页面内容 -->
       <Content id="page-content" :class="['markdown-main-style', { 's-card': frontmatter.card }]" />
       <!-- 评论 -->
-      <Comments v-if="frontmatter.comment" />
+      <Comments v-if="frontmatter.comment && !isRemotePost" />
     </div>
     <Aside v-if="frontmatter.aside" />
   </div>
@@ -13,6 +13,12 @@
 
 <script setup>
 const { frontmatter } = useData();
+const route = useRoute();
+
+const isRemotePost = computed(() => {
+  const routePath = decodeURIComponent(route.path);
+  return routePath.includes("/pages/article/");
+});
 </script>
 
 <style lang="scss" scoped>

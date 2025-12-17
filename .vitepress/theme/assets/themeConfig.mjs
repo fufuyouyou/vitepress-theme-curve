@@ -21,7 +21,7 @@ export const themeConfig = {
     },
   },
   // 备案信息
-  icp: "萌ICP备114514号",
+  icp: "晋ICP备2025070551号-1",
   // 建站日期
   since: "2025-12-01",
   // 每页文章数据
@@ -148,9 +148,9 @@ export const themeConfig = {
           url: "https://tools.suzhibin.cn",
         },
         {
-          icon: "/images/soft.png",
-          name: "软件",
-          url: "https://soft.suzhibin.cn",
+          icon: "/images/tv.png",
+          name: "影视",
+          url: "https://tv.suzhibin.cn",
         },
         {
           icon: "/images/book.png",
@@ -200,15 +200,15 @@ export const themeConfig = {
   },
   // 评论
   comment: {
-    enable: false,
+    enable: true,
     // 评论系统选择
     // artalk / twikoo
     type: "artalk",
     // artalk
     // https://artalk.js.org/
     artalk: {
-      site: "",
-      server: "",
+      site: "素还真",
+      server: "https://comment.suzhibin.cn",
     },
     // twikoo
     // https://twikoo.js.org/

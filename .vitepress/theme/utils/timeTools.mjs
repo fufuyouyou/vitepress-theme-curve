@@ -56,10 +56,12 @@ export const getTimeRemaining = () => {
  * @return {number} 返回的天数
  */
 export const getDaysUntil = (dateStr) => {
+  if (!dateStr) {
+    return 0;
+  }
   const now = dayjs();
   const targetDate = dayjs(dateStr);
-  const daysUntil = targetDate.diff(now, "day");
-  return daysUntil;
+  return targetDate.diff(now, "day");
 };
 
 /**

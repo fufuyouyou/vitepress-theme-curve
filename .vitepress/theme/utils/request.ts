@@ -24,6 +24,7 @@ const errorHandler = (error: any) => {
 };
 
 const request = axios.create({
+  // baseURL: 'https://manage.suzhibin.cn/manage-api',
   baseURL: 'http://127.0.0.1:8080/manage-api',
   timeout: 10000, // 超时时间，10s
   withCredentials: true,

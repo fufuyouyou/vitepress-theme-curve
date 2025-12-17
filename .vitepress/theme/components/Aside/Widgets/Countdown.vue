@@ -3,9 +3,9 @@
   <div class="count-down s-card">
     <div class="count-left">
       <span class="text"> 距离 </span>
-      <span class="name">{{ theme.aside.countDown.data.name }}</span>
-      <span class="time"> {{ getDaysUntil(theme.aside.countDown.data.date) }} </span>
-      <span class="date">{{ theme.aside.countDown.data.date }}</span>
+      <span class="name">{{ countDown.name }}</span>
+      <span class="time"> {{ getDaysUntil(countDown.date) }} </span>
+      <span class="date">{{ countDown.date }}</span>
     </div>
     <div v-if="remainData" class="count-right">
       <div v-for="(item, tag, index) in remainData" :key="index" class="count-item">
@@ -38,6 +38,11 @@ const { theme } = useData();
 const remainData = ref(null);
 const remainInterval = ref(null);
 
+const countDown = ref({
+  name: "",
+  date: "",
+});
+
 // 获取倒计时数据
 const getRemainData = () => {
   remainData.value = getTimeRemaining();
@@ -46,7 +51,44 @@ const getRemainData = () => {
   }, 1000);
 };
 
+const uniqueByKeyKeepFirst = (arr, key) => {
+  const seen = new Map();
+  return arr.filter((item) => {
+    const value = item[key];
+    if (seen.has(value)) {
+      return false;
+    }
+    seen.set(value, true);
+    return true;
+  });
+};
+
+const getCountDownData = async () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const result = await fetch(
+    `https://cdn.jsdelivr.net/gh/NateScarlet/holiday-cn@master/${year}.json`,
+  );
+  const { days } = await result.json();
+  let dayList = uniqueByKeyKeepFirst(days, "name");
+  if (getDaysUntil(dayList[dayList.length - 1].date) <= 0) {
+    const nextResult = await fetch(
+      `https://cdn.jsdelivr.net/gh/NateScarlet/holiday-cn@master/${year + 1}.json`,
+    );
+    const { days: nextDays } = await nextResult.json();
+    dayList = uniqueByKeyKeepFirst(nextDays, "name");
+  }
+  for (const day of dayList) {
+    if (getDaysUntil(day.date) > 0) {
+      countDown.value.name = day.name;
+      countDown.value.date = day.date;
+      break;
+    }
+  }
+};
+
 onMounted(() => {
+  getCountDownData();
   getRemainData();
 });
 

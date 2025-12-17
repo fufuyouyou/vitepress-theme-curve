@@ -152,7 +152,7 @@ onBeforeUnmount(() => {
     font-size: 2.75rem;
   }
   .subtitle {
-    width: 80%;
+    width: 100%;
     font-size: 1.25rem;
     opacity: 0.8;
     animation: fade-up-opacity 0.6s 0.1s backwards;
