@@ -30,7 +30,7 @@ const initArtalk = async () => {
     artalk.value = Artalk.init({
       el: commentRef.value || "#comment-dom",
       locale: "auto",
-      pageKey: route.path,
+      pageKey: comment.artalk.siteUrl + route.path,
       site: comment.artalk.site,
       server: comment.artalk.server,
     });

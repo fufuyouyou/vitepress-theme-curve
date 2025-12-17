@@ -209,6 +209,7 @@ export const themeConfig = {
     artalk: {
       site: "素还真",
       server: "https://comment.suzhibin.cn",
+      siteUrl: "https://blog.suzhibin.cn",
     },
     // twikoo
     // https://twikoo.js.org/
