@@ -1,19 +1,19 @@
 {
   "index_name": "suzhibin",
-  "start_urls": ["https://blog.suzhibin.cn/"],
+  "start_urls": ["https://blog.suzhibin.cn"],
   "rateLimit": 8,
   "maxDepth": 10,
   "selectors": {
     "lvl0": { "selector": "", "defaultValue": "Documentation" },
-    "lvl1": ".content h1",
-    "lvl2": ".content h2",
-    "lvl3": ".content h3",
-    "lvl4": ".content h4",
-    "lvl5": ".content h5",
-    "content": ".content p, .content li"
+    "lvl1": ".main-layout h1",
+    "lvl2": ".main-layout h2",
+    "lvl3": ".main-layout h3",
+    "lvl4": ".main-layout h4",
+    "lvl5": ".main-layout h5",
+    "content": ".main-layout p, .main-layout li"
   },
   "selectors_exclude": [
-    "aside", ".page-footer", ".next-and-prev-link", ".table-of-contents"
+    "aside", ".main-header", ".footer-link", ".main-footer"
   ],
   "js_render": true
 }
