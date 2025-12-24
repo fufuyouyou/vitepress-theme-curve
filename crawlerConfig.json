@@ -1,12 +1,11 @@
 {
   "index_name": "suzhibin",
   "start_urls": [
-    {
-      "url": "https://blog.suzhibin.cn/sitemap.xml",
-      "selectors_key": "sitemap"
-    }
+    "https://blog.suzhibin.cn/sitemap.xml"
   ],
-  "sitemaps": ["https://blog.suzhibin.cn/sitemap.xml"],
+  "sitemaps": [
+    "https://blog.suzhibin.cn/sitemap.xml"
+  ],
   "force_sitemap_urls_crawling": true,
   "stop_urls": [
     "/tags/",
@@ -15,19 +14,17 @@
     "/pages/"
   ],
   "selectors": {
-    "sitemap": {
-      "lvl0": {
-        "selector": "",
-        "default_value": "博客文章"
-      },
-      "lvl1": "#app .main-layout .post h1",
-      "lvl2": "#app .main-layout .post h2",
-      "lvl3": "#app .main-layout .post h3",
-      "lvl4": "#app .main-layout .post h4",
-      "category": "#app .main-layout .post .cat-item span",
-      "tags": "#app .main-layout .post .tag-item span",
-      "content": "#app .main-layout .post .markdown-main-style"
-    }
+    "lvl0": {
+      "selector": "",
+      "default_value": "博客文章"
+    },
+    "lvl1": "#app .main-layout .post h1",
+    "lvl2": "#app .main-layout .post h2",
+    "lvl3": "#app .main-layout .post h3",
+    "lvl4": "#app .main-layout .post h4",
+    "category": "#app .main-layout .post .cat-item span",
+    "tags": "#app .main-layout .post .tag-item span",
+    "content": "#app .main-layout .post .markdown-main-style"
   },
   "selectors_exclude": [
     ".main-header",
