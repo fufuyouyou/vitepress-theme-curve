@@ -14,9 +14,9 @@ jobs:
           APPLICATION_ID: ${{ secrets.APPLICATION_ID }}
           API_KEY: ${{ secrets.API_KEY }}
         run: |
-          docker pull algolia/crawler:latest
+          docker pull algolia/docsearch-scraper
           docker run --rm \
             --env APPLICATION_ID=$APPLICATION_ID \
             --env API_KEY=$API_KEY \
             --env CONFIG="$(cat crawlerConfig.json)" \
-            algolia/crawler:latest
+            algolia/docsearch-scraper
