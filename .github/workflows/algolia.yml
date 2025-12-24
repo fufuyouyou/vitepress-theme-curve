@@ -36,6 +36,10 @@ jobs:
               "/pages/"
             ],
             "selectors": {
+              "lvl0": {
+                "selector": "",
+                "default_value": "Blog Post"
+              },
               "lvl1": "#app .main-layout .post h1",
               "lvl2": "#app .main-layout .post h2",
               "lvl3": "#app .main-layout .post h3",
