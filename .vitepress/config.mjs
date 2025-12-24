@@ -13,7 +13,6 @@ import markdownConfig from "./theme/utils/markdownConfig.mjs";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import path from "path";
-import { sitemapPlugin } from "@vuepress/plugin-sitemap";
 
 // 获取全局数据
 const postData = await getAllPosts();
@@ -172,16 +171,6 @@ export default withPwa(
         theme_color: "#fff",
         background_color: "#efefef"
       },
-    },
-    plugins: [
-      sitemapPlugin({
-        hostname: themeConfig.siteMeta.site,
-        extraUrls: async () => {
-          return postData.map(post => post.regularPath)
-        },
-        sitemapFilename: 'sitemap.xml',
-        pretty: true,
-      })
-    ],
-  }),
+    }
+  })
 );

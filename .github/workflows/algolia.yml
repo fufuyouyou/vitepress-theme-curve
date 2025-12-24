@@ -8,11 +8,60 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - name: Run Official Algolia Crawler
-        env:
-          ALGOLIA_APP_ID: ${{ secrets.APPLICATION_ID }}
-          ALGOLIA_API_KEY: ${{ secrets.API_KEY }}
-          CONFIG_FILE: 'crawlerConfig.json'
+        with:
+          fetch-depth: 0
+      - name: Scan local posts and generate dynamic config
+        id: generate_config
         run: |
-          curl -L https://raw.githubusercontent.com/algolia/docsearch-scraper/master/run.sh | bash
+          url_list=()
+          base_url="https://blog.suzhibin.cn"
+          while IFS= read -r file; do
+            clean_path="${file#./}"
+            clean_path="${clean_path%.md}"
+            full_url="$base_url/$clean_path"
+            url_list+=("$full_url")
+          done < <(find ./posts -type f -name "*.md")
+          json_urls=""
+          for url in "${url_list[@]}"; do
+            json_urls="$json_urls\"$url\","
+          done
+          json_urls="${json_urls%,}"
+          
+          cat > crawlerConfig.json << EOF
+          {
+            "index_name": "suzhibin",
+            "start_urls": [$json_urls],
+            "stop_urls": [
+              "/tags/",
+              "/categories/",
+              "/page/",
+              "/pages/"
+            ],
+            "selectors": {
+              "lvl1": "#app .main-layout .post h1",
+              "lvl2": "#app .main-layout .post h2",
+              "lvl3": "#app .main-layout .post h3",
+              "lvl4": "#app .main-layout .post h4",
+              "category": "#app .main-layout .post .cat-item span",
+              "tags": "#app .main-layout .post .tag-item span",
+              "content": "#app .main-layout .post .markdown-main-style"
+            },
+            "selectors_exclude": [
+              ".main-header",
+              ".footer-link",
+              ".main-footer",
+              ".home"
+            ],
+            "js_render": true,
+            "js_wait": 2,
+            "max_depth": 0
+          }
+          EOF
+          
+          echo "config=$(cat crawlerConfig.json | jq -r tostring)" >> $GITHUB_OUTPUT
+      - name: Push indices to Algolia
+        uses: signcl/docsearch-scraper-action@master
+        env:
+          APPLICATION_ID: ${{ secrets.APPLICATION_ID }}
+          API_KEY: ${{ secrets.API_KEY }}
+          CONFIG: ${{ steps.generate_config.outputs.config }}

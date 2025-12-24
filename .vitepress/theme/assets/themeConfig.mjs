@@ -105,9 +105,7 @@ export const themeConfig = {
           rel: "preconnect",
           crossorigin: "",
         },
-      ],
-      // Sitemap
-      ['link', { rel: 'sitemap', type: 'application/xml', href: '/sitemap.xml' }]
+      ]
     ],
   },
   // 导航栏菜单
