@@ -14,15 +14,14 @@ jobs:
         id: generate_config
         run: |
           base_url="https://blog.suzhibin.cn"
-          url_list=()
+          url_array=()
           while IFS= read -r file; do
             file="${file#./}"
-            rel_path="${rel_path#/}"
-            path_without_ext="${rel_path%.md}"
+            path_without_ext="${file%.md}"
             url="$base_url/$path_without_ext"
-            url_list+=("$url")
+            url_array+=("\"$url\"")
           done < <(find ./posts -type f -name "*.md" | sort)
-          url_list_str="${url_list[*]}"
+          url_list_str="${url_array[*]}"
           echo "$url_list_str"
           
           cat > crawlerConfig.json << EOF
