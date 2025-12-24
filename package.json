@@ -24,6 +24,7 @@
     "deploy:vercel": "vercel deploy"
   },
   "devDependencies": {
+    "@vuepress/plugin-sitemap": "^2.0.0-rc.121",
     "cheerio": "1.0.0-rc.12",
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",

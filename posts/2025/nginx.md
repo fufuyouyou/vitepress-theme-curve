@@ -6,6 +6,8 @@ date: 2025-10-02
 description: 本文主要记录nginx在linux环境下的安装。
 ---
 
+## Linux安装nginx
+
 ### 更新系统
 
 ```bash
