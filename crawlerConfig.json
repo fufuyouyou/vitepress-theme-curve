@@ -1,18 +1,30 @@
 {
   "index_name": "suzhibin",
-  "start_urls": ["https://blog.suzhibin.cn/"],
-  "sitemap_urls": ["https://blog.suzhibin.cn/sitemap.xml"],
-  "ignore_sitemap_errors": false,
-  "sitemap_urls_regexs": [".*"],
+  "start_urls": [
+    {
+      "url": "https://blog.suzhibin.cn/sitemap.xml",
+      "selectors_key": "sitemap",
+      "page_rank": 100
+    }
+  ],
   "rateLimit": 8,
-  "maxDepth": 10,
+  "maxDepth": 0,
   "selectors": {
-    "lvl0": { "selector": "", "defaultValue": "Documentation" },
-    "lvl1": "#app .main-layout .post h1",
-    "lvl2": "#app .main-layout .post h2",
-    "lvl3": "#app .main-layout .post h3",
-    "lvl4": "#app .main-layout .post h4",
-    "content": "#app .main-layout .post .markdown-main-style"
+    "sitemap": {
+      "lvl0": {
+        "selector": "loc",
+        "global": true,
+        "defaultValue": "Sitemap"
+      }
+    },
+    "default": {
+      "lvl0": { "selector": "", "defaultValue": "Documentation" },
+      "lvl1": "#app .main-layout .post h1",
+      "lvl2": "#app .main-layout .post h2",
+      "lvl3": "#app .main-layout .post h3",
+      "lvl4": "#app .main-layout .post h4",
+      "content": "#app .main-layout .post .markdown-main-style"
+    }
   },
   "selectors_exclude": [
     ".main-header", ".footer-link", ".main-footer", ".home"
