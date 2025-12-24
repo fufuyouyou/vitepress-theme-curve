@@ -12,7 +12,7 @@
       :future="{
         preserveSharedStateOnUnmount: true,
       }"
-      index-name="imsyy"
+      index-name="suzhibin"
       @state-change="searchChange"
     >
       <ais-configure :hits-per-page.camel="8" />
@@ -45,10 +45,6 @@
           <div class="information">
             <span v-if="hasSearchValue" class="text"> 本次用时 {{ processingTimeMS }} 毫秒 </span>
           </div>
-          <a class="power" href="https://www.algolia.com/" target="_blank">
-            <i class="iconfont icon-algolia" />
-            <span class="name">Algolia</span>
-          </a>
         </template>
       </ais-stats>
     </ais-instant-search>
@@ -95,7 +91,6 @@ const formatSearchData = (data) => {
     const searchData = { url, type, title, anchor, content };
     results.push(searchData);
   }
-  console.log(results);
   return results;
 };
 
