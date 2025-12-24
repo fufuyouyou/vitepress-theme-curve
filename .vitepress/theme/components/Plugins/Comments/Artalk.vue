@@ -121,10 +121,6 @@ onUnmounted(() => {
         border: 1px solid var(--at-color-border);
         padding: 6px 10px;
       }
-
-      .atk-link {
-        display: none;
-      }
     }
 
     .atk-bottom {
