@@ -1,6 +1,6 @@
 {
   "index_name": "suzhibin",
-  "start_urls": ["https://blog.suzhibin.cn/posts/"],
+  "start_urls": ["https://blog.suzhibin.cn/"],
   "sitemap_urls": ["https://blog.suzhibin.cn/sitemap.xml"],
   "ignore_sitemap_errors": false,
   "sitemap_urls_regexs": [".*"],
