@@ -13,22 +13,22 @@ jobs:
       - name: Scan local posts and generate dynamic config
         id: generate_config
         run: |
-          echo "开始扫描 /posts 目录下的 Markdown 文件..."
-          post_urls=""
           base_url="https://blog.suzhibin.cn"
+          url_list=()
           while IFS= read -r file; do
-                      file="${file#./}"
-                      path_without_ext="${file%.md}"
-                      url="$base_url/$path_without_ext"
-                      post_urls="$post_urls\"$url\","
-                    done < <(find ./posts -type f -name "*.md" | sort)
-          post_urls="${post_urls%,}"
-          echo "共发现 $(echo "$post_urls" | tr -cd ',' | wc -c) 篇文章。"
+            file="${file#./}"
+            rel_path="${rel_path#/}"
+            path_without_ext="${rel_path%.md}"
+            url="$base_url/$path_without_ext"
+            url_list+=("$url")
+          done < <(find ./posts -type f -name "*.md" | sort)
+          url_list_str="${url_list[*]}"
+          echo "$url_list_str"
           
           cat > crawlerConfig.json << EOF
           {
             "index_name": "suzhibin",
-            "start_urls": [$post_urls],
+            "start_urls": [$url_list_str],
             "stop_urls": [
               "/tags/",
               "/categories/",
