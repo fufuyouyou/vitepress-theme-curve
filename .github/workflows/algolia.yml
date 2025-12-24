@@ -40,13 +40,7 @@ jobs:
                 "selector": "",
                 "default_value": "Blog Post"
               },
-              "lvl1": "#app .main-layout .post h1",
-              "lvl2": "#app .main-layout .post h2",
-              "lvl3": "#app .main-layout .post h3",
-              "lvl4": "#app .main-layout .post h4",
-              "category": "#app .main-layout .post .cat-item span",
-              "tags": "#app .main-layout .post .tag-item span",
-              "content": "#app .main-layout .post .markdown-main-style"
+              "lvl1": "#app .main-layout .post h1"
             },
             "selectors_exclude": [
               ".main-header",
