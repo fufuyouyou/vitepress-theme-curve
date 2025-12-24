@@ -4,7 +4,7 @@
       <div class="nav-all">
         <!-- 导航栏左侧 -->
         <div class="left-nav">
-          <div class="more-menu nav-btn">
+          <div class="more-menu nav-btn" title="更多内容">
             <i class="iconfont icon-menu" />
             <div class="more-card s-card">
               <div v-for="(item, index) in theme.navMore" :key="index" class="more-item">
@@ -31,17 +31,17 @@
         <!-- 导航栏菜单 -->
         <div class="nav-center">
           <div class="site-menu">
-            <div v-for="(item, index) in navList" :key="index" class="menu-item">
-              <span class="link-btn"> {{ item.name }}</span>
-              <div v-if="item.children" class="link-child">
+            <div v-for="(item, index) in theme.nav" :key="index" class="menu-item">
+              <span class="link-btn"> {{ item.text }}</span>
+              <div v-if="item.items" class="link-child">
                 <span
-                  v-for="(child, childIndex) in item.children"
+                  v-for="(child, childIndex) in item.items"
                   :key="childIndex"
                   class="link-child-btn"
-                  @click="router.go(child.url)"
+                  @click="router.go(child.link)"
                 >
                   <i v-if="child.icon" :class="`iconfont icon-${child.icon}`" />
-                  {{ child.name }}
+                  {{ child.text }}
                 </span>
               </div>
             </div>
@@ -129,20 +129,11 @@
 import { storeToRefs } from "pinia";
 import { mainStore } from "@/store";
 import { smoothScrolling, shufflePost } from "@/utils/helper";
-import { listNav } from "../api/data.js";
 
 const router = useRouter();
 const store = mainStore();
 const { scrollData } = storeToRefs(store);
 const { site, theme, frontmatter, page } = useData();
-
-const navList = ref([]);
-
-onMounted(() => {
-  listNav().then((res) => {
-    navList.value = res.data;
-  });
-});
 </script>
 
 <style lang="scss" scoped>

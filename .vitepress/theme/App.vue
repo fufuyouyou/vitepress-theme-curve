@@ -8,7 +8,7 @@
   <!-- 导航栏 -->
   <Nav />
   <!-- 主内容 -->
-  <main :class="['main-layout', { loading: loadingStatus, 'is-post': isPostPage || isRemotePost }]">
+  <main :class="['main-layout', { loading: loadingStatus, 'is-post': isPostPage }]">
     <!-- 404 -->
     <NotFound v-if="page.isNotFound" />
     <!-- 首页 -->
@@ -22,22 +22,27 @@
     </template>
   </main>
   <!-- 页脚 -->
-  <FooterLink v-show="!loadingStatus" :showBar="(isPostPage || isRemotePost) && !page.isNotFound" />
+  <FooterLink v-show="!loadingStatus" :showBar="isPostPage && !page.isNotFound" />
   <Footer v-show="!loadingStatus" />
   <!-- 悬浮菜单 -->
   <Teleport to="body">
     <!-- 左侧菜单 -->
     <div :class="['left-menu', { hidden: footerIsShow }]">
-<!--      &lt;!&ndash; 全局设置 &ndash;&gt;-->
-<!--      <Settings />-->
-<!--      &lt;!&ndash; 全局播放器 &ndash;&gt;-->
-<!--      <Player />-->
+      <!-- 全局设置 -->
+      <Settings />
+      <!-- 全局播放器 -->
+      <Player />
+      <!--      &lt;!&ndash; 全局设置 &ndash;&gt;-->
+      <!--      <Settings />-->
+      <!--      &lt;!&ndash; 全局播放器 &ndash;&gt;-->
+      <!--      <Player />-->
     </div>
   </Teleport>
   <!-- 右键菜单 -->
   <RightMenu ref="rightMenuRef" />
   <!-- 全局消息 -->
-<!--  <Message />-->
+  <Message />
+  <!--  <Message />-->
 </template>
 
 <script setup>
@@ -58,11 +63,6 @@ const rightMenuRef = ref(null);
 const isPostPage = computed(() => {
   const routePath = decodeURIComponent(route.path);
   return routePath.includes("/posts/");
-});
-
-const isRemotePost = computed(() => {
-  const routePath = decodeURIComponent(route.path);
-  return routePath.includes("/pages/article/");
 });
 
 // 开启右键菜单

@@ -56,8 +56,6 @@
         <div class="expired s-card" v-if="postMetaData?.expired >= 180">
           本文发表于 <strong>{{ postMetaData?.expired }}</strong> 天前，其中的信息可能已经事过境迁
         </div>
-        <!-- AI 摘要 -->
-        <ArticleGPT />
         <!-- 文章内容 -->
         <Content id="page-content" class="markdown-main-style" />
         <!-- 参考资料 -->

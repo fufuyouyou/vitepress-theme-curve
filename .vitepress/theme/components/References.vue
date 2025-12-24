@@ -1,40 +1,29 @@
 <!-- 参考资料 -->
 <template>
-  <div v-if="quote && quote.length > 0" class="references s-card">
+  <div v-if="references" class="references s-card">
     <div class="title">
       <i class="iconfont icon-quote"></i>
       <span class="title-text">参考资料</span>
     </div>
     <ul class="list">
       <a
-        v-for="(item, index) in quote"
+        v-for="(item, index) in references"
         :key="index"
         :href="item.url"
         class="list-item"
         target="_blank"
       >
         <span class="item-title">{{ item.title }}</span>
-    </a>
+      </a>
     </ul>
   </div>
 </template>
 
 <script setup>
-const props = defineProps({
-  // 文章数据
-  postData: {
-    type: Object,
-    default: {},
-  },
-});
+const { frontmatter } = useData();
 
-const quote = computed(() => {
-  const arr = JSON.parse(props.postData?.quote || '[]');
-  return Array.isArray(arr) ? arr.map((it) => ({
-    title: it?.title || '',
-    url: it?.url || ''
-  })) : [];
-})
+// 参考资料
+const references = frontmatter.value?.references;
 </script>
 
 <style lang="scss" scoped>
@@ -83,8 +72,6 @@ const quote = computed(() => {
         content: "";
         position: absolute;
         left: 0;
-        top: 50%;
-        transform: translate(0, -50%);
         width: 8px;
         height: 8px;
         opacity: 0.6;

@@ -25,7 +25,7 @@
           <i class="iconfont icon-time"></i>
           上次更新
         </span>
-        <span class="num">{{ daysFromNow(theme.postData?.[0]?.createDate) }} 天前</span>
+        <span class="num">{{ daysFromNow(theme.postData?.[0]?.date) }} 天前</span>
       </div>
     </div>
   </div>

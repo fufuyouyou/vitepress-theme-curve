@@ -125,7 +125,7 @@ export const shufflePost = (postData) => {
   // 随机文章
   const randomPost = postData[randomIndex];
   // 跳转到随机文章
-  return `/pages/article/${randomPost.id}`;
+  return randomPost.regularPath;
 };
 
 /**

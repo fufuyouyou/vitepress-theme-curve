@@ -11,12 +11,12 @@
       </a>
       <a href="/" :class="['type-item', { choose: !currentTypeName }]">首页</a>
       <a
-        v-for="(item, index) in computedCategories"
+        v-for="(_, key, index) in theme.categoriesData"
         :key="index"
-        :href="`/pages/categories/${item.name}`"
-        :class="['type-item', { hidden: currentTypeName === item.name }]"
+        :href="`/pages/categories/${key}`"
+        :class="['type-item', { hidden: currentTypeName === key }]"
       >
-        {{ item.name }}
+        {{ key }}
       </a>
     </div>
     <a href="/pages/categories" class="more-type">
@@ -28,16 +28,16 @@
     <div class="all-type">
       <a v-if="currentTypeName" :href="`/pages/tags/${currentTypeName}`" class="type-item choose">
         {{ currentTypeName }}
-        <span class="num">{{ computedTags?.find((item) => item.name === currentTypeName)?.articleTotal || 0 }}</span>
+        <span class="num">{{ theme.tagsData?.[currentTypeName]?.count || 0 }}</span>
       </a>
       <a
-        v-for="(item, index) in computedTags"
+        v-for="(item, key, index) in theme.tagsData"
         :key="index"
-        :href="`/pages/tags/${item.name}`"
-        :class="['type-item', { hidden: currentTypeName === item.name }]"
+        :href="`/pages/tags/${key}`"
+        :class="['type-item', { hidden: currentTypeName === key }]"
       >
-        {{ item.name }}
-        <span class="num">{{ item.articleTotal }}</span>
+        {{ key }}
+        <span class="num">{{ item.count }}</span>
       </a>
     </div>
     <a href="/pages/tags" class="more-type">
@@ -48,7 +48,6 @@
 </template>
 
 <script setup>
-import { listLabel, listType } from "../../api/data.js";
 const { theme, params } = useData();
 const props = defineProps({
   // 显示类别
@@ -61,21 +60,6 @@ const props = defineProps({
 // 获取当前路由路径
 const currentTypeName = computed(() => {
   return params.value?.name || null;
-});
-
-const tagsData = ref([]);
-const categoriesData = ref([]);
-const computedTags = computed(() => (tagsData.value && tagsData.value.length ? tagsData.value : theme.tagsData));
-const computedCategories = computed(() =>
-  categoriesData.value && categoriesData.value.length ? categoriesData.value : theme.categoriesData,
-);
-
-onMounted(async () => {
-  try {
-    const [{ data: tags }, { data: cats }] = await Promise.all([listLabel(), listType()]);
-    tagsData.value = tags || [];
-    categoriesData.value = cats || [];
-  } catch (e) {}
 });
 </script>
 
@@ -98,11 +82,11 @@ onMounted(async () => {
     margin-right: 12px;
     overflow: hidden;
     mask: linear-gradient(
-      90deg,
-      #fff 0,
-      #fff 90%,
-      hsla(0, 0%, 100%, 0.6) 95%,
-      hsla(0, 0%, 100%, 0) 100%
+        90deg,
+        #fff 0,
+        #fff 90%,
+        hsla(0, 0%, 100%, 0.6) 95%,
+        hsla(0, 0%, 100%, 0) 100%
     );
     .type-item {
       display: flex;

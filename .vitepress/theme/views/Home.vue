@@ -31,7 +31,6 @@
 
 <script setup>
 import { mainStore } from "@/store";
-import { pageArticle, listLabel, listType } from "../api/data.js";
 
 const { theme } = useData();
 const store = mainStore();
@@ -58,76 +57,51 @@ const props = defineProps({
   },
 });
 
+// 每页文章数
 const postSize = theme.value.postSize;
 
-const runtimeTags = ref([]);
-const runtimeCategories = ref([]);
-const totalCount = ref(0);
+// 列表总数量
 const allListTotal = computed(() => {
-  if (props.showCategories) {
-    const source = runtimeCategories.value && runtimeCategories.value.length ? runtimeCategories.value : theme.value.categoriesData;
-    return source.find((item) => item.name === props.showCategories)?.articleTotal || 0;
-  }
-  if (props.showTags) {
-    const source = runtimeTags.value && runtimeTags.value.length ? runtimeTags.value : theme.value.tagsData;
-    return source.find((item) => item.name === props.showTags)?.articleTotal || 0;
-  }
-  return totalCount.value || theme.value.postData.length;
+  const data = props.showCategories
+    ? theme.value.categoriesData[props.showCategories]?.articles
+    : props.showTags
+      ? theme.value.tagsData[props.showTags]?.articles
+      : theme.value.postData;
+  // 返回数量
+  return data ? data.length : 0;
 });
 
 // 获得当前页数
 const getCurrentPage = () => {
   if (props.showCategories || props.showTags) {
-    if (typeof window === "undefined") return 1;
+    if (typeof window === "undefined") return 0;
     const params = new URLSearchParams(window.location.search);
     const page = params.get("page");
-    if (!page) return 1;
+    if (!page) return 0;
     const currentPage = Number(page);
-    return currentPage ? currentPage : 1;
+    return currentPage ? currentPage - 1 : 0;
   }
-  return props.page ? props.page : 1;
+  return props.page ? props.page - 1 : 0;
 };
-
-const postData = ref([]);
-
-watch(
-  () => props.page,
-  async () => {
-    await listData();
-  },
-);
 
 // 根据页数计算列表数据
-const listData = async () => {
+const postData = computed(() => {
   const page = getCurrentPage();
-  const queryParams = {
-    type: "",
-    tags: "",
-  };
+  let data = null;
   // 分类数据
   if (props.showCategories) {
-    queryParams.type = props.showCategories;
-  } else if (props.showTags) {
-    // 标签数据
-    queryParams.tags = props.showTags;
+    data = theme.value.categoriesData[props.showCategories]?.articles;
   }
-  const { data, page: pageInfo } = await pageArticle({ pageNo: page, pageSize: postSize }, queryParams);
-  postData.value = data;
-  totalCount.value = pageInfo.totalCount;
-};
-
-const initRuntimeData = async () => {
-  const [{ data: tags }, { data: cats }] = await Promise.all([
-    listLabel(),
-    listType()
-  ]);
-  runtimeTags.value = tags || [];
-  runtimeCategories.value = cats || [];
-};
-
-onMounted(() => {
-  listData();
-  initRuntimeData();
+  // 标签数据
+  else if (props.showTags) {
+    data = theme.value.tagsData[props.showTags]?.articles;
+  }
+  // 文章数据
+  else {
+    data = theme.value.postData;
+  }
+  // 返回列表
+  return data ? data.slice(page * postSize, page * postSize + postSize) : [];
 });
 
 // 恢复滚动位置
@@ -158,17 +132,14 @@ watch(
     width: 100%;
     display: flex;
     flex-direction: row;
-
     .posts-content {
       width: calc(100% - 300px);
       transition: width 0.3s;
     }
-
     .main-aside {
       width: 300px;
       padding-left: 1rem;
     }
-
     @media (max-width: 1200px) {
       .posts-content {
         width: 100%;

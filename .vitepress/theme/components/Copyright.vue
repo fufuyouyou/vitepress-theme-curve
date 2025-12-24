@@ -13,11 +13,11 @@
       </div>
       <div class="meta-item">
         <span class="tip">发布于</span>
-        <span class="name">{{ formatTimestamp(postData?.createDate) }}</span>
+        <span class="name">{{ formatTimestamp(postData?.date) }}</span>
       </div>
       <div class="meta-item">
         <span class="tip">更新于</span>
-        <span class="name">{{ formatTimestamp(postData?.updateDate) }}</span>
+        <span class="name">{{ formatTimestamp(postData?.lastModified) }}</span>
       </div>
       <div class="meta-item cc">
         <span class="tip">许可协议</span>

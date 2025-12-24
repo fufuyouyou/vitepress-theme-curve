@@ -1,86 +1,21 @@
 import { defineConfig } from "vitepress";
 import { createRssFile } from "./theme/utils/generateRSS.mjs";
 import { withPwa } from "@vite-pwa/vitepress";
+import {
+  getAllPosts,
+  getAllType,
+  getAllCategories,
+  getAllArchives,
+} from "./theme/utils/getPostData.mjs";
 import { jumpRedirect } from "./theme/utils/commonTools.mjs";
 import { getThemeConfig } from "./init.mjs";
 import markdownConfig from "./theme/utils/markdownConfig.mjs";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import path from "path";
-import { countByYear, listLabel, listType, pageArticle } from "./theme/api/data.js";
-
-const createDynamicPathsRefresher = () => {
-  const files = {
-    article: path.resolve(process.cwd(), "pages", "article", "[id].paths.mjs"),
-    tags: path.resolve(process.cwd(), "pages", "tags", "[name].paths.mjs"),
-    categories: path.resolve(process.cwd(), "pages", "categories", "[name].paths.mjs"),
-    pageNum: path.resolve(process.cwd(), "page", "[num].paths.mjs"),
-  };
-  const prev = { article: "", tags: "", categories: "", pageNum: "" };
-  return {
-    name: "vitepress-dynamic-paths-refresher",
-    apply: "serve",
-    configureServer(server) {
-      const invalidate = (file) => {
-        const mods = server.moduleGraph.getModulesByFile(file);
-        if (mods) {
-          for (const m of mods) server.moduleGraph.invalidateModule(m);
-        }
-      };
-      const check = async () => {
-        let changed = false;
-        try {
-          const { data: articleData } = await pageArticle({ pageNo: 1, pageSize: -1 }, {});
-          const articleDigest = JSON.stringify(articleData);
-          if (prev.article && prev.article !== articleDigest) {
-            invalidate(files.article);
-            changed = true;
-          }
-          prev.article = articleDigest;
-          try {
-            const theme = await getThemeConfig();
-            const postsPerPage = theme.postSize;
-            const pageDigest = `${articleData?.length || 0}:${postsPerPage}`;
-            if (prev.pageNum && prev.pageNum !== pageDigest) {
-              invalidate(files.pageNum);
-              changed = true;
-            }
-            prev.pageNum = pageDigest;
-          } catch (e) {}
-        } catch (e) {}
-        try {
-          const { data: tagsData } = await listLabel();
-          const tagsDigest = JSON.stringify(tagsData);
-          if (prev.tags && prev.tags !== tagsDigest) {
-            invalidate(files.tags);
-            changed = true;
-          }
-          prev.tags = tagsDigest;
-        } catch (e) {}
-        try {
-          const { data: categoriesData } = await listType();
-          const categoriesDigest = JSON.stringify(categoriesData);
-          if (prev.categories && prev.categories !== categoriesDigest) {
-            invalidate(files.categories);
-            changed = true;
-          }
-          prev.categories = categoriesDigest;
-        } catch (e) {}
-        if (changed) server.ws.send({ type: "full-reload" });
-      };
-      check();
-      // 每 1 小时检查一次
-      const timer = setInterval(check, 60 * 60 * 1000);
-      server.httpServer?.on("close", () => clearInterval(timer));
-    },
-  };
-};
 
 // 获取全局数据
-const { data: postData } = await pageArticle({ pageNo: 1, pageSize: -1 }, {});
-const { data: categoriesData } = await listType();
-const { data: tagsData } = await listLabel();
-const { data: archivesData } = await countByYear();
+const postData = await getAllPosts();
 
 // 获取主题配置
 const themeConfig = await getThemeConfig();
@@ -108,9 +43,9 @@ export default withPwa(
       ...themeConfig,
       // 必要数据
       postData: postData,
-      tagsData: tagsData,
-      categoriesData: categoriesData,
-      archivesData: archivesData,
+      tagsData: getAllType(postData),
+      categoriesData: getAllCategories(postData),
+      archivesData: getAllArchives(postData),
     },
     // markdown
     markdown: {
@@ -154,7 +89,6 @@ export default withPwa(
           include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
           dts: ".vitepress/components.d.ts",
         }),
-        createDynamicPathsRefresher(),
       ],
       resolve: {
         // 配置路径别名

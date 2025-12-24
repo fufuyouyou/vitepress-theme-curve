@@ -34,13 +34,13 @@
               <span class="link-title"> 标签</span>
               <div class="link-child">
                 <div
-                  v-for="(item, index) in tagsData"
+                  v-for="(item, tag, index) in tagsData"
                   :key="index"
                   class="link-child-btn"
-                  @click="pageJump(`/pages/tags/${item.name}`)"
+                  @click="pageJump(`/pages/tags/${tag}`)"
                 >
-                  <span class="name">{{ item.name }}</span>
-                  <sup class="num">{{ item.articleTotal }}</sup>
+                  <span class="name">{{ tag }}</span>
+                  <sup class="num">{{ item.count }}</sup>
                 </div>
               </div>
             </div>

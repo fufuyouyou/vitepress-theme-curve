@@ -24,9 +24,7 @@
     "deploy:vercel": "vercel deploy"
   },
   "devDependencies": {
-    "@types/crypto-js": "^4.2.2",
     "cheerio": "1.0.0-rc.12",
-    "crypto-js": "^4.2.0",
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.31.0",
@@ -53,7 +51,6 @@
     "@vueuse/core": "^11.3.0",
     "algoliasearch": "^5.19.0",
     "aplayer": "^1.10.1",
-    "axios": "^1.13.2",
     "dayjs": "^1.11.13",
     "instantsearch.js": "^4.77.0",
     "lodash-es": "^4.17.21",
