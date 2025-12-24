@@ -22,6 +22,7 @@ jobs:
             url_array+=("\"$url\"")
           done < <(find ./posts -type f -name "*.md" | sort)
           url_list_str="${url_array[*]}"
+          url_list_str="${url_list_str// /,}"
           echo "$url_list_str"
           
           cat > crawlerConfig.json << EOF
