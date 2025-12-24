@@ -1,19 +1,22 @@
 name: algolia
 on:
- push:
-   branches:
-     - master
+  push:
+    branches:
+      - master
 jobs:
- algolia:
-   runs-on: ubuntu-latest
-   steps:
-     - uses: actions/checkout@v3
-     - name: Get the content of crawlerConfig.json as config
-       id: algolia_config
-       run: echo "config=$(cat crawlerConfig.json | jq -r tostring)" >> $GITHUB_OUTPUT
-     - name: Push indices to Algolia
-       uses: signcl/docsearch-scraper-action@master
-       env:
-         APPLICATION_ID: ${{ secrets.APPLICATION_ID }}
-         API_KEY: ${{ secrets.API_KEY }}
-         CONFIG: ${{ steps.algolia_config.outputs.config }}
+  algolia:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Run Algolia Crawler via Docker
+        env:
+          APPLICATION_ID: ${{ secrets.APPLICATION_ID }}
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          docker pull algolia/docsearch-scraper
+          docker run \
+            --env APPLICATION_ID=$APPLICATION_ID \
+            --env API_KEY=$API_KEY \
+            --env CONFIG="$(cat crawlerConfig.json)" \
+            algolia/docsearch-scraper

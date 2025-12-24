@@ -1,44 +1,28 @@
 {
   "index_name": "suzhibin",
   "start_urls": [
-    {
-      "url": "https://blog.suzhibin.cn/sitemap.xml",
-      "selectors_key": "sitemap"
-    }
+    "https://blog.suzhibin.cn/"
   ],
-  "sitemaps": ["https://blog.suzhibin.cn/sitemap.xml"],
-  "rateLimit": 8,
-  "maxDepth": 0,
-  "force_sitemap_urls_crawling": true,
-  "scrap_start_urls": false,
-  "use_sitemaps": true,
-  "only_content_level": true,
+  "sitemaps": [
+    "https://blog.suzhibin.cn/sitemap.xml"
+  ],
+  "stop_urls": [
+    "/tags/",
+    "/categories/",
+    "/page/"
+  ],
   "selectors": {
-    "sitemap": {
-      "lvl0": {
-        "selector": "",
-        "default_value": "博客文章"
-      },
-      "lvl1": "#app .main-layout .post h1",
-      "lvl2": "#app .main-layout .post h2",
-      "lvl3": "#app .main-layout .post h3",
-      "lvl4": "#app .main-layout .post h4",
-      "category": "#app .main-layout .post .cat-item span",
-      "tags": "#app .main-layout .post .tag-item span",
-      "content": "#app .main-layout .post .markdown-main-style",
-      "lang": {
-        "selector": "html[lang]",
-        "default_value": "zh-CN"
-      },
-      "title": {
-        "selector": "title",
-        "default_value": ""
-      },
-      "date": {
-        "selector": "time, .post-date, .date",
-        "default_value": ""
-      }
-    }
+    "lvl0": {
+      "selector": "",
+      "default_value": "博客文章"
+    },
+    "lvl1": "#app .main-layout .post h1",
+    "lvl2": "#app .main-layout .post h2",
+    "lvl3": "#app .main-layout .post h3",
+    "lvl4": "#app .main-layout .post h4",
+    "category": "#app .main-layout .post .cat-item span",
+    "tags": "#app .main-layout .post .tag-item span",
+    "content": "#app .main-layout .post .markdown-main-style"
   },
   "selectors_exclude": [
     ".main-header",
@@ -46,61 +30,5 @@
     ".main-footer",
     ".home"
   ],
-  "js_render": true,
-  "allowed_domains": ["blog.suzhibin.cn"],
-  "respect_nofollow": true,
-  "respect_robots_txt": true,
-  "exclude_urls": [
-    ".*/tags/.*",
-    ".*/categories/.*",
-    ".*/page/.*",
-    ".*\\?.*",
-    ".*#.*"
-  ],
-  "custom_settings": {
-    "attributesForFaceting": ["lang", "tags", "category"],
-    "attributesToRetrieve": [
-      "hierarchy.lvl0",
-      "hierarchy.lvl1",
-      "hierarchy.lvl2",
-      "hierarchy.lvl3",
-      "content",
-      "type",
-      "url",
-      "lang",
-      "category",
-      "tags",
-      "title",
-      "date"
-    ],
-    "attributesToHighlight": ["content", "hierarchy.lvl0"],
-    "attributesToSnippet": ["content:80"],
-    "searchableAttributes": [
-      "unordered(hierarchy.lvl0)",
-      "unordered(hierarchy.lvl1)",
-      "unordered(hierarchy.lvl2)",
-      "unordered(hierarchy.lvl3)",
-      "content",
-      "title",
-      "tags"
-    ],
-    "distinct": true,
-    "attributeForDistinct": "url",
-    "ranking": [
-      "words",
-      "filters",
-      "typo",
-      "attribute",
-      "proximity",
-      "exact",
-      "custom"
-    ],
-    "highlightPreTag": "<span class=\"algolia-highlight\">",
-    "highlightPostTag": "</span>",
-    "minWordSizefor1Typo": 3,
-    "minWordSizefor2Typos": 7,
-    "allowTyposOnNumericTokens": false,
-    "ignorePlurals": true,
-    "advancedSyntax": true
-  }
+  "js_render": true
 }
