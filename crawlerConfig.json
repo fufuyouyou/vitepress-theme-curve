@@ -4,13 +4,13 @@
   "rateLimit": 8,
   "maxDepth": 10,
   "selectors": {
-    "lvl0": { "selector": ".post .post-meta .title h1", "defaultValue": "Documentation" },
-    "lvl1": ".post h1",
-    "lvl2": ".post h2",
-    "lvl3": ".post h3",
-    "lvl4": ".post h4",
-    "lvl5": ".post h5",
-    "content": ".post p, .post li"
+    "lvl0": { "selector": ".main-layout .post h1", "defaultValue": "Documentation" },
+    "lvl1": ".main-layout .post h1",
+    "lvl2": ".main-layout .post h2",
+    "lvl3": ".main-layout .post h3",
+    "lvl4": ".main-layout .post h4",
+    "lvl5": ".main-layout .post h5",
+    "content": ".main-layout .post p, .main-layout .post li"
   },
   "selectors_exclude": [
     ".main-header", ".footer-link", ".main-footer", ".home"
