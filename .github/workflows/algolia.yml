@@ -7,16 +7,10 @@ jobs:
   algolia:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Run Algolia Crawler
-        env:
-          APPLICATION_ID: ${{ secrets.APPLICATION_ID }}
-          API_KEY: ${{ secrets.API_KEY }}
-        run: |
-          docker pull algolia/docsearch-scraper
-          docker run --rm \
-            --env APPLICATION_ID=$APPLICATION_ID \
-            --env API_KEY=$API_KEY \
-            --env CONFIG="$(cat crawlerConfig.json)" \
-            algolia/docsearch-scraper
+      - uses: actions/checkout@v3
+      - name: Crawl site with Algolia's official crawler
+        uses: crawlerprod/github-action@v1
+        with:
+          config_file_path: 'crawlerConfig.json'
+          algolia_app_id: ${{ secrets.APPLICATION_ID }}
+          algolia_api_key: ${{ secrets.API_KEY }}

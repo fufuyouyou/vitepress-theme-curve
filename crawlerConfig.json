@@ -1,12 +1,8 @@
 {
   "index_name": "suzhibin",
   "start_urls": [
-    "https://blog.suzhibin.cn/sitemap.xml"
+    "https://blog.suzhibin.cn/"
   ],
-  "sitemaps": [
-    "https://blog.suzhibin.cn/sitemap.xml"
-  ],
-  "force_sitemap_urls_crawling": true,
   "stop_urls": [
     "/tags/",
     "/categories/",
