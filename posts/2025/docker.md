@@ -117,8 +117,8 @@ systemctl restart docker
 1. 下载对应版本二进制文件：https://github.com/docker/compose/releases
 2. 增加执行权限
 ```bash
-mv docker-compose-Linux-x86_64 /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
+sudo mv docker-compose-linux-x86_64 /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 ```
 3. 验证安装
 ```bash
