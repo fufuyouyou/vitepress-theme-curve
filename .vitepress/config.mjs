@@ -1,4 +1,5 @@
 import { defineConfig } from "vitepress";
+import { withMermaid } from "vitepress-plugin-mermaid";
 import { createRssFile } from "./theme/utils/generateRSS.mjs";
 import { withPwa } from "@vite-pwa/vitepress";
 import {
@@ -22,7 +23,7 @@ const themeConfig = await getThemeConfig();
 
 // https://vitepress.dev/reference/site-config
 export default withPwa(
-  defineConfig({
+  withMermaid(defineConfig({
     title: themeConfig.siteMeta.title,
     description: themeConfig.siteMeta.description,
     lang: themeConfig.siteMeta.lang,
@@ -56,6 +57,31 @@ export default withPwa(
         lazyLoading: true,
       },
       config: (md) => markdownConfig(md, themeConfig),
+    },
+    // Mermaid 配置
+    mermaid: {
+      theme: "base",
+      themeVariables: {
+        fontSize: "14px",
+        primaryColor: "#e1f5fe",
+        primaryBorderColor: "#90caf9",
+        primaryTextColor: "#333",
+        lineColor: "#666",
+        secondaryColor: "#fff3e0",
+        tertiaryColor: "#e8f5e9",
+      },
+      flowchart: {
+        padding: 15,
+        nodeSpacing: 30,
+        rankSpacing: 40,
+        useMaxWidth: true,
+        htmlLabels: true,
+      },
+      sequence: {
+        useMaxWidth: true,
+        boxMargin: 10,
+        noteMargin: 10,
+      },
     },
     // 构建排除
     srcExclude: ["**/README.md", "**/TODO.md"],
@@ -172,5 +198,5 @@ export default withPwa(
         background_color: "#efefef"
       },
     }
-  })
+  }))
 );

@@ -93,11 +93,15 @@
 import { formatTimestamp } from "@/utils/helper";
 import { generateId } from "@/utils/commonTools";
 import initFancybox from "@/utils/initFancybox";
+import initMermaidTools from "@/utils/initMermaidTools";
 
 const { page, theme, frontmatter } = useData();
 
 // 评论元素
 const commentRef = ref(null);
+
+// Mermaid 工具清理函数
+let cleanupMermaidTools = null;
 
 // 获取对应文章数据
 const postMetaData = computed(() => {
@@ -107,6 +111,14 @@ const postMetaData = computed(() => {
 
 onMounted(() => {
   initFancybox(theme.value);
+  cleanupMermaidTools = initMermaidTools();
+});
+
+onUnmounted(() => {
+  if (cleanupMermaidTools) {
+    cleanupMermaidTools();
+    cleanupMermaidTools = null;
+  }
 });
 </script>
 

@@ -405,6 +405,92 @@
     padding-bottom: 8px;
     font-family: auto;
   }
+  // Mermaid 图表样式修复
+  .mermaid {
+    position: relative;
+    margin: 1rem 0;
+    padding: 1rem;
+    text-align: center;
+    overflow-x: auto;
+    border: 1px solid var(--main-card-border);
+    border-radius: 12px;
+    background-color: var(--main-card-second-background);
+    &:hover {
+      .mermaid-toolbar {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+    }
+    svg {
+      max-width: 100%;
+      height: auto !important;
+      overflow: visible;
+    }
+    // 重置主题样式对 Mermaid 节点文字的干扰
+    p, span, div, text, tspan, foreignObject, foreignObject * {
+      line-height: 1.4 !important;
+      letter-spacing: normal !important;
+      margin: 0 !important;
+      font-size: inherit !important;
+    }
+    img {
+      width: auto !important;
+      border-radius: 0 !important;
+    }
+    // 节点内文字不被裁切
+    .node rect, .node circle, .node polygon, .node ellipse {
+      overflow: visible;
+    }
+    .nodeLabel, .edgeLabel, .label {
+      line-height: 1.4 !important;
+      letter-spacing: normal !important;
+      white-space: normal !important;
+      overflow: visible !important;
+    }
+    // 下载按钮
+    .mermaid-toolbar {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: flex;
+      align-items: center;
+      padding: 4px;
+      border-radius: 8px;
+      background-color: var(--main-card-background);
+      border: 1px solid var(--main-card-border);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transform: translateY(-4px);
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 10;
+      .mermaid-tool-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: none;
+        border-radius: 6px;
+        background-color: transparent;
+        color: var(--main-font-second-color);
+        cursor: pointer;
+        transition: color 0.3s, background-color 0.3s;
+        &:hover {
+          color: var(--main-color);
+          background-color: var(--main-color-bg);
+        }
+        svg {
+          width: 16px;
+          height: 16px;
+          max-width: 16px;
+          overflow: visible;
+        }
+      }
+    }
+  }
   // custom-block
   .custom-block {
     margin: 1rem 0;
